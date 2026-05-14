@@ -445,7 +445,15 @@ export type Database = {
           updated_at?: string
           word_count?: number
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "manuscripts_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       memberships: {
         Row: {
