@@ -8,8 +8,9 @@ import {
   Scripts,
 } from "@tanstack/react-router";
 import appCss from "../styles.css?url";
-import { AuthProvider } from "@/lib/auth";
+import { AuthProvider, useAuth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
+import { OnboardingModal } from "@/components/OnboardingModal";
 
 function NotFoundComponent() {
   return (
