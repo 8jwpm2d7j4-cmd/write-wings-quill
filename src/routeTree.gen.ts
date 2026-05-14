@@ -10,8 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UpgradeRouteImport } from './routes/upgrade'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NewRouteImport } from './routes/new'
+import { Route as MarketingRouteImport } from './routes/marketing'
 import { Route as ManageRouteImport } from './routes/manage'
 import { Route as GoalsRouteImport } from './routes/goals'
 import { Route as FeedRouteImport } from './routes/feed'
@@ -34,6 +36,11 @@ const UpgradeRoute = UpgradeRouteImport.update({
   path: '/upgrade',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -42,6 +49,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const NewRoute = NewRouteImport.update({
   id: '/new',
   path: '/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MarketingRoute = MarketingRouteImport.update({
+  id: '/marketing',
+  path: '/marketing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ManageRoute = ManageRouteImport.update({
@@ -135,8 +147,10 @@ export interface FileRoutesByFullPath {
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
   '/manage': typeof ManageRoute
+  '/marketing': typeof MarketingRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/upgrade': typeof UpgradeRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -156,8 +170,10 @@ export interface FileRoutesByTo {
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
   '/manage': typeof ManageRoute
+  '/marketing': typeof MarketingRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/upgrade': typeof UpgradeRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -178,8 +194,10 @@ export interface FileRoutesById {
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
   '/manage': typeof ManageRoute
+  '/marketing': typeof MarketingRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/upgrade': typeof UpgradeRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -201,8 +219,10 @@ export interface FileRouteTypes {
     | '/feed'
     | '/goals'
     | '/manage'
+    | '/marketing'
     | '/new'
     | '/profile'
+    | '/sitemap.xml'
     | '/upgrade'
     | '/book/$slug'
     | '/checkout/success'
@@ -222,8 +242,10 @@ export interface FileRouteTypes {
     | '/feed'
     | '/goals'
     | '/manage'
+    | '/marketing'
     | '/new'
     | '/profile'
+    | '/sitemap.xml'
     | '/upgrade'
     | '/book/$slug'
     | '/checkout/success'
@@ -243,8 +265,10 @@ export interface FileRouteTypes {
     | '/feed'
     | '/goals'
     | '/manage'
+    | '/marketing'
     | '/new'
     | '/profile'
+    | '/sitemap.xml'
     | '/upgrade'
     | '/book/$slug'
     | '/checkout/success'
@@ -265,8 +289,10 @@ export interface RootRouteChildren {
   FeedRoute: typeof FeedRoute
   GoalsRoute: typeof GoalsRoute
   ManageRoute: typeof ManageRoute
+  MarketingRoute: typeof MarketingRoute
   NewRoute: typeof NewRoute
   ProfileRoute: typeof ProfileRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UpgradeRoute: typeof UpgradeRoute
   BookSlugRoute: typeof BookSlugRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
@@ -287,6 +313,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof UpgradeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -299,6 +332,13 @@ declare module '@tanstack/react-router' {
       path: '/new'
       fullPath: '/new'
       preLoaderRoute: typeof NewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketing': {
+      id: '/marketing'
+      path: '/marketing'
+      fullPath: '/marketing'
+      preLoaderRoute: typeof MarketingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/manage': {
@@ -425,8 +465,10 @@ const rootRouteChildren: RootRouteChildren = {
   FeedRoute: FeedRoute,
   GoalsRoute: GoalsRoute,
   ManageRoute: ManageRoute,
+  MarketingRoute: MarketingRoute,
   NewRoute: NewRoute,
   ProfileRoute: ProfileRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   UpgradeRoute: UpgradeRoute,
   BookSlugRoute: BookSlugRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,

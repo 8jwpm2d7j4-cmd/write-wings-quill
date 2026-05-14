@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Disallow: /write/
+Disallow: /publish/
+Disallow: /manage
+Disallow: /analytics
+Disallow: /goals
+Disallow: /cover/
+Disallow: /checkout/
+Disallow: /auth
+Disallow: /profile
