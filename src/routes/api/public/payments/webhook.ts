@@ -52,27 +52,76 @@ async function handleTransactionCompleted(data: any, env: PaddleEnv) {
   if (!userId || !amountCents) return;
 
   if (kind === 'tip') {
+    const toUserId = customData.toUserId;
+    if (!toUserId || toUserId === userId) {
+      console.warn('Skipping tip: invalid toUserId', { toUserId, userId });
+      return;
+    }
     await getSupabase().from('tips').upsert({
       from_user_id: userId,
-      to_user_id: customData.toUserId,
+      to_user_id: toUserId,
       manuscript_id: customData.manuscriptId || null,
       amount_cents: amountCents,
       paddle_transaction_id: id,
       environment: env,
     }, { onConflict: 'paddle_transaction_id' });
-    // Award patron achievement
     await getSupabase().from('user_achievements').upsert(
       { user_id: userId, code: 'first_tip' }, { onConflict: 'user_id,code' }
     );
+    await getSupabase().from('notifications').insert({
+      user_id: toUserId,
+      actor_id: userId,
+      kind: 'tip_received',
+      manuscript_id: customData.manuscriptId || null,
+      message: `You received a $${(amountCents / 100).toFixed(2)} tip ✦`,
+    });
   } else if (kind === 'chapter_unlock') {
+    const chapterId = customData.chapterId;
+    if (!chapterId) return;
     await getSupabase().from('chapter_unlocks').upsert({
       user_id: userId,
-      chapter_id: customData.chapterId,
+      chapter_id: chapterId,
       amount_cents: amountCents,
       paddle_transaction_id: id,
       environment: env,
     }, { onConflict: 'user_id,chapter_id' });
+    const { data: ch } = await getSupabase()
+      .from('chapters')
+      .select('manuscript_id, title, manuscripts!inner(author_id)')
+      .eq('id', chapterId)
+      .maybeSingle();
+    const authorId = (ch as any)?.manuscripts?.author_id;
+    if (authorId && authorId !== userId) {
+      await getSupabase().from('notifications').insert({
+        user_id: authorId,
+        actor_id: userId,
+        kind: 'chapter_purchased',
+        manuscript_id: (ch as any).manuscript_id,
+        message: `A reader unlocked "${(ch as any).title}" for $${(amountCents / 100).toFixed(2)}`,
+      });
+    }
   }
+}
+
+async function handlePaymentFailed(data: any, env: PaddleEnv) {
+  const { customData, subscriptionId } = data;
+  let userId: string | undefined = customData?.userId;
+  if (!userId && subscriptionId) {
+    const { data: sub } = await getSupabase()
+      .from('subscriptions')
+      .select('user_id')
+      .eq('paddle_subscription_id', subscriptionId)
+      .eq('environment', env)
+      .maybeSingle();
+    userId = (sub as any)?.user_id;
+  }
+  if (!userId) return;
+  await getSupabase().from('notifications').insert({
+    user_id: userId,
+    actor_id: null,
+    kind: 'payment_failed',
+    message: 'A payment failed. Please update your payment method to keep Pro active.',
+  });
 }
 
 async function handleWebhook(req: Request, env: PaddleEnv) {
@@ -82,6 +131,7 @@ async function handleWebhook(req: Request, env: PaddleEnv) {
     case EventName.SubscriptionUpdated: await handleSubscriptionUpdated(event.data, env); break;
     case EventName.SubscriptionCanceled: await handleSubscriptionCanceled(event.data, env); break;
     case EventName.TransactionCompleted: await handleTransactionCompleted(event.data, env); break;
+    case EventName.TransactionPaymentFailed: await handlePaymentFailed(event.data, env); break;
     default: console.log('Unhandled event:', event.eventType);
   }
 }
