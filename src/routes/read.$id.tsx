@@ -39,7 +39,7 @@ function Read() {
   });
   const { data: chapters = [] } = useQuery({
     queryKey: ["read-ch", id],
-    queryFn: async () => (await supabase.from("chapters").select("*").eq("manuscript_id", id).order("order")).data ?? [],
+    queryFn: async () => (await supabase.from("chapters").select("id,manuscript_id,title,order,word_count,is_paid,unlock_price_cents,created_at,updated_at").eq("manuscript_id", id).order("order")).data ?? [],
   });
   const { data: likes = [] } = useQuery({
     queryKey: ["likes", id],
@@ -137,17 +137,15 @@ function Read() {
             const locked = c.is_paid && !unlockedSet.has(c.id) && user?.id !== m.author_id;
             return (
               <section key={c.id}>
-                <div className="flex items-center justify-between border-b border-border pb-2 mb-4">
-                  <h2 className="font-serif text-2xl">{c.title}</h2>
-                  {!locked && <NarrateButton text={`${c.title}. ${c.content}`} />}
-                </div>
                 {locked ? (
-                  <PaidChapterGate chapterId={c.id} chapterTitle={c.title} priceCents={c.unlock_price_cents ?? 99} />
-                ) : (
                   <>
-                    {c.content.split(/\n\n+/).map((p: string, i: number) => <p key={i} className="mb-4">{p}</p>)}
-                    <Reactions chapterId={c.id} />
+                    <div className="flex items-center justify-between border-b border-border pb-2 mb-4">
+                      <h2 className="font-serif text-2xl">{c.title}</h2>
+                    </div>
+                    <PaidChapterGate chapterId={c.id} chapterTitle={c.title} priceCents={c.unlock_price_cents ?? 99} />
                   </>
+                ) : (
+                  <ChapterContent chapterId={c.id} title={c.title} />
                 )}
               </section>
             );
@@ -213,5 +211,31 @@ function NarrateButton({ text }: { text: string }) {
         : state === "playing" ? <Pause className="h-4 w-4" />
         : <Play className="h-4 w-4" />}
     </button>
+  );
+}
+
+function ChapterContent({ chapterId, title }: { chapterId: string; title: string }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ["chapter-content", chapterId],
+    queryFn: async () => (await supabase.rpc("get_chapter_content", { _chapter_id: chapterId })).data ?? "",
+  });
+  const content = (data ?? "") as string;
+  return (
+    <>
+      <div className="flex items-center justify-between border-b border-border pb-2 mb-4">
+        <h2 className="font-serif text-2xl">{title}</h2>
+        {content && <NarrateButton text={`${title}. ${content}`} />}
+      </div>
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : content ? (
+        <>
+          {content.split(/\n\n+/).map((p, i) => <p key={i} className="mb-4">{p}</p>)}
+          <Reactions chapterId={chapterId} />
+        </>
+      ) : (
+        <p className="text-sm text-muted-foreground">Content unavailable.</p>
+      )}
+    </>
   );
 }

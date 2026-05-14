@@ -6,14 +6,6 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { userIsPro } from "@/lib/membership.server";
 
 const FREE_DAILY_ASSISTS = 5;
-const dailyUsage = new Map<string, { date: string; count: number }>();
-function bumpUsage(userId: string): number {
-  const today = new Date().toISOString().slice(0, 10);
-  const cur = dailyUsage.get(userId);
-  if (!cur || cur.date !== today) { dailyUsage.set(userId, { date: today, count: 1 }); return 1; }
-  cur.count += 1;
-  return cur.count;
-}
 
 const assistInput = z.object({
   mode: z.enum(["continue", "rewrite", "improve", "brainstorm", "outline"]),
@@ -30,8 +22,9 @@ export const aiAssist = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => assistInput.parse(d))
   .handler(async ({ data, context }) => {
     if (!(await userIsPro(context.userId))) {
-      const used = bumpUsage(context.userId);
-      if (used > FREE_DAILY_ASSISTS) {
+      const { data: used, error: usageErr } = await context.supabase.rpc("bump_ai_usage");
+      if (usageErr) throw new Error("Could not record AI usage");
+      if ((used ?? 0) > FREE_DAILY_ASSISTS) {
         throw new Error(`Free plan limit reached (${FREE_DAILY_ASSISTS} AI assists/day). Upgrade to Quill Pro for unlimited.`);
       }
     }
