@@ -45,6 +45,28 @@ function Profile() {
     <div className="px-5 pt-12">
       <h1 className="font-serif text-3xl">Your profile</h1>
 
+      <Link
+        to="/upgrade"
+        className="mt-5 flex items-center gap-3 paper-card p-4 hover:bg-accent/40 transition"
+      >
+        <div className="grid h-10 w-10 place-items-center rounded-full bg-accent text-accent-foreground">
+          <Crown className="h-5 w-5" />
+        </div>
+        <div className="flex-1">
+          <div className="font-serif text-base leading-tight">
+            {isPro ? "Quill Pro ✦" : "Upgrade to Quill Pro"}
+          </div>
+          <div className="text-xs text-muted-foreground mt-0.5">
+            {isPro
+              ? subscription?.cancel_at_period_end && subscription.current_period_end
+                ? `Cancels ${new Date(subscription.current_period_end).toLocaleDateString()}`
+                : "Active membership · manage plan"
+              : "Unlimited AI, contests & more — $6/mo"}
+          </div>
+        </div>
+        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+      </Link>
+
       <div className="mt-6 paper-card p-5 space-y-4">
         <div className="space-y-1.5">
           <Label>Pen name</Label>
@@ -59,7 +81,6 @@ function Profile() {
 
       <h2 className="mt-8 font-serif text-xl">Coming soon</h2>
       <div className="mt-3 grid grid-cols-2 gap-3">
-        <ComingSoon icon={Crown} title="Quill Membership" subtitle="Unlimited AI · monthly contests · cash prizes" />
         <ComingSoon icon={Trophy} title="Writing contests" subtitle="Compete monthly with prompts" />
         <ComingSoon icon={Mic} title="Voice dictation" subtitle="Speak your chapters" />
         <ComingSoon icon={Headphones} title="AI narration" subtitle="Hear your draft as audio" />
