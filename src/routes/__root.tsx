@@ -11,6 +11,7 @@ import appCss from "../styles.css?url";
 import { AuthProvider, useAuth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { OnboardingModal } from "@/components/OnboardingModal";
+import { ThemeProvider } from "@/lib/theme";
 
 function NotFoundComponent() {
   return (
@@ -125,11 +126,13 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Outlet />
-        <OnboardingGate />
-        <Toaster richColors closeButton position="top-center" />
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <Outlet />
+          <OnboardingGate />
+          <Toaster richColors closeButton position="top-center" />
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
