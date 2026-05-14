@@ -817,6 +817,7 @@ export type Database = {
         Args: { _email: string; _uid: string }
         Returns: undefined
       }
+      _seed_exec: { Args: { _sql: string }; Returns: undefined }
       gen_referral_code: { Args: never; Returns: string }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
