@@ -58,9 +58,9 @@ function Author() {
 
       <div className="mt-4 flex items-start gap-3">
         {profile.avatar_url ? (
-          <img src={profile.avatar_url} alt="" className="h-16 w-16 rounded-full object-cover" />
+          <img src={profile.avatar_url} alt={`${profile.pen_name}'s avatar`} className="h-16 w-16 rounded-full object-cover" />
         ) : (
-          <div className="h-16 w-16 rounded-full bg-accent grid place-items-center font-serif text-xl">{profile.pen_name[0]}</div>
+          <div aria-hidden="true" className="h-16 w-16 rounded-full bg-accent grid place-items-center font-serif text-xl">{profile.pen_name[0]}</div>
         )}
         <div className="flex-1 min-w-0">
           <h1 className="font-serif text-2xl truncate">{profile.pen_name}</h1>
