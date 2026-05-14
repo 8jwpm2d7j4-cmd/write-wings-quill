@@ -156,7 +156,6 @@ function OnboardingGate() {
       });
     }
   }, [user?.id]);
-  const { user } = useAuth();
   if (!user) return null;
   return <OnboardingModal />;
 }
