@@ -14,6 +14,12 @@ import { Reactions } from "@/components/Reactions";
 import { FollowButton } from "@/components/FollowButton";
 import { PaidChapterGate } from "@/components/PaidChapterGate";
 import { pingReadingStreak } from "@/lib/streaks";
+import { BookmarkButton } from "@/components/BookmarkButton";
+import { ShareButton } from "@/components/ShareButton";
+import { ReportButton } from "@/components/ReportButton";
+import { CommentItem } from "@/components/CommentItem";
+import { readingLabel } from "@/lib/reading";
+import { notify } from "@/lib/notify";
 
 export const Route = createFileRoute("/read/$id")({ component: Read });
 
@@ -50,19 +56,39 @@ function Read() {
 
   useEffect(() => { if (user) pingReadingStreak(user.id).catch(() => {}); }, [user?.id, id]);
 
+  // Track reading progress (scroll %)
+  useEffect(() => {
+    if (!user) return;
+    let last = 0;
+    const onScroll = () => {
+      const h = document.documentElement;
+      const pct = Math.round(((h.scrollTop + window.innerHeight) / h.scrollHeight) * 100);
+      if (Math.abs(pct - last) < 5) return;
+      last = pct;
+      supabase.from("reading_progress").upsert({ user_id: user.id, manuscript_id: id, scroll_pct: Math.min(100, pct), updated_at: new Date().toISOString() }).then(() => {});
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [user?.id, id]);
+
   const liked = !!user && likes.some((l: any) => l.user_id === user.id);
   const [body, setBody] = useState("");
 
   const toggleLike = async () => {
     if (!user) { toast.error("Sign in to like"); return; }
-    if (liked) await supabase.from("likes").delete().eq("user_id", user.id).eq("manuscript_id", id);
-    else await supabase.from("likes").insert({ user_id: user.id, manuscript_id: id });
+    if (liked) {
+      await supabase.from("likes").delete().eq("user_id", user.id).eq("manuscript_id", id);
+    } else {
+      await supabase.from("likes").insert({ user_id: user.id, manuscript_id: id });
+      if (m?.author_id) notify({ userId: m.author_id, actorId: user.id, kind: "like", message: `Someone liked "${m.title}"`, manuscriptId: id }).catch(() => {});
+    }
     qc.invalidateQueries({ queryKey: ["likes", id] });
   };
 
   const postComment = async () => {
     if (!user || !body.trim()) return;
     await supabase.from("comments").insert({ user_id: user.id, manuscript_id: id, body: body.trim() });
+    if (m?.author_id) notify({ userId: m.author_id, actorId: user.id, kind: "comment", message: `New comment on "${m.title}"`, manuscriptId: id }).catch(() => {});
     setBody("");
     qc.invalidateQueries({ queryKey: ["comments", id] });
   };
