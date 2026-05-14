@@ -41,6 +41,14 @@ function Read() {
     queryKey: ["comments", id],
     queryFn: async () => (await supabase.from("comments").select("*, profiles(pen_name)").eq("manuscript_id", id).order("created_at", { ascending: false })).data ?? [],
   });
+  const { data: unlocks = [] } = useQuery({
+    queryKey: ["unlocks", id, user?.id],
+    queryFn: async () => (await supabase.from("chapter_unlocks").select("chapter_id").eq("user_id", user!.id)).data ?? [],
+    enabled: !!user,
+  });
+  const unlockedSet = new Set(unlocks.map((u: any) => u.chapter_id));
+
+  useEffect(() => { if (user) pingReadingStreak(user.id).catch(() => {}); }, [user?.id, id]);
 
   const liked = !!user && likes.some((l: any) => l.user_id === user.id);
   const [body, setBody] = useState("");
