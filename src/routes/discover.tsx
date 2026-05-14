@@ -9,7 +9,33 @@ import { readingLabel } from "@/lib/reading";
 
 const GENRES = ["All", "Fiction", "Romance", "Sci-Fi", "Fantasy", "Mystery", "Thriller", "Memoir", "Poetry", "Non-fiction"];
 
-export const Route = createFileRoute("/discover")({ component: () => <AppShell><Discover /></AppShell> });
+export const Route = createFileRoute("/discover")({
+  component: () => <AppShell><Discover /></AppShell>,
+  head: () => ({
+    meta: [
+      { title: "Discover stories from indie writers — Quill" },
+      { name: "description", content: "Browse new books and chapters from indie writers around the world. Filter by genre and find your next favorite story on Quill." },
+      { property: "og:title", content: "Discover stories on Quill" },
+      { property: "og:description", content: "New books and chapters from indie writers around the world." },
+      { property: "og:url", content: "https://write-wings-quill.lovable.app/discover" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://write-wings-quill.lovable.app/discover" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Discover stories on Quill",
+          description: "Browse new books and chapters from indie writers around the world.",
+          url: "https://write-wings-quill.lovable.app/discover",
+        }),
+      },
+    ],
+  }),
+});
 
 function Discover() {
   const [q, setQ] = useState("");
