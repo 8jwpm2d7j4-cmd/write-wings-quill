@@ -9,13 +9,35 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NewRouteImport } from './routes/new'
+import { Route as GoalsRouteImport } from './routes/goals'
+import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WriteIdRouteImport } from './routes/write.$id'
+import { Route as ReadIdRouteImport } from './routes/read.$id'
+import { Route as PublishIdRouteImport } from './routes/publish.$id'
+import { Route as CoverIdRouteImport } from './routes/cover.$id'
 
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NewRoute = NewRouteImport.update({
   id: '/new',
   path: '/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GoalsRoute = GoalsRouteImport.update({
+  id: '/goals',
+  path: '/goals',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DiscoverRoute = DiscoverRouteImport.update({
+  id: '/discover',
+  path: '/discover',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -28,44 +50,144 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WriteIdRoute = WriteIdRouteImport.update({
+  id: '/write/$id',
+  path: '/write/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadIdRoute = ReadIdRouteImport.update({
+  id: '/read/$id',
+  path: '/read/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublishIdRoute = PublishIdRouteImport.update({
+  id: '/publish/$id',
+  path: '/publish/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoverIdRoute = CoverIdRouteImport.update({
+  id: '/cover/$id',
+  path: '/cover/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/discover': typeof DiscoverRoute
+  '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
+  '/profile': typeof ProfileRoute
+  '/cover/$id': typeof CoverIdRoute
+  '/publish/$id': typeof PublishIdRoute
+  '/read/$id': typeof ReadIdRoute
+  '/write/$id': typeof WriteIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/discover': typeof DiscoverRoute
+  '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
+  '/profile': typeof ProfileRoute
+  '/cover/$id': typeof CoverIdRoute
+  '/publish/$id': typeof PublishIdRoute
+  '/read/$id': typeof ReadIdRoute
+  '/write/$id': typeof WriteIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/discover': typeof DiscoverRoute
+  '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
+  '/profile': typeof ProfileRoute
+  '/cover/$id': typeof CoverIdRoute
+  '/publish/$id': typeof PublishIdRoute
+  '/read/$id': typeof ReadIdRoute
+  '/write/$id': typeof WriteIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/new'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/discover'
+    | '/goals'
+    | '/new'
+    | '/profile'
+    | '/cover/$id'
+    | '/publish/$id'
+    | '/read/$id'
+    | '/write/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/new'
-  id: '__root__' | '/' | '/auth' | '/new'
+  to:
+    | '/'
+    | '/auth'
+    | '/discover'
+    | '/goals'
+    | '/new'
+    | '/profile'
+    | '/cover/$id'
+    | '/publish/$id'
+    | '/read/$id'
+    | '/write/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/discover'
+    | '/goals'
+    | '/new'
+    | '/profile'
+    | '/cover/$id'
+    | '/publish/$id'
+    | '/read/$id'
+    | '/write/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
+  DiscoverRoute: typeof DiscoverRoute
+  GoalsRoute: typeof GoalsRoute
   NewRoute: typeof NewRoute
+  ProfileRoute: typeof ProfileRoute
+  CoverIdRoute: typeof CoverIdRoute
+  PublishIdRoute: typeof PublishIdRoute
+  ReadIdRoute: typeof ReadIdRoute
+  WriteIdRoute: typeof WriteIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/new': {
       id: '/new'
       path: '/new'
       fullPath: '/new'
       preLoaderRoute: typeof NewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/goals': {
+      id: '/goals'
+      path: '/goals'
+      fullPath: '/goals'
+      preLoaderRoute: typeof GoalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/discover': {
+      id: '/discover'
+      path: '/discover'
+      fullPath: '/discover'
+      preLoaderRoute: typeof DiscoverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -82,13 +204,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/write/$id': {
+      id: '/write/$id'
+      path: '/write/$id'
+      fullPath: '/write/$id'
+      preLoaderRoute: typeof WriteIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/read/$id': {
+      id: '/read/$id'
+      path: '/read/$id'
+      fullPath: '/read/$id'
+      preLoaderRoute: typeof ReadIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/publish/$id': {
+      id: '/publish/$id'
+      path: '/publish/$id'
+      fullPath: '/publish/$id'
+      preLoaderRoute: typeof PublishIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/cover/$id': {
+      id: '/cover/$id'
+      path: '/cover/$id'
+      fullPath: '/cover/$id'
+      preLoaderRoute: typeof CoverIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
+  DiscoverRoute: DiscoverRoute,
+  GoalsRoute: GoalsRoute,
   NewRoute: NewRoute,
+  ProfileRoute: ProfileRoute,
+  CoverIdRoute: CoverIdRoute,
+  PublishIdRoute: PublishIdRoute,
+  ReadIdRoute: ReadIdRoute,
+  WriteIdRoute: WriteIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
