@@ -1,0 +1,19 @@
+# Quill
+
+> Quill is a beautiful storytelling app for writers: draft chapters with AI, design book covers, publish to Kindle, build a reader following, and earn from tips and paid chapters.
+
+## Pages
+
+- [Home](/): Your personal writing library — start a new manuscript or continue reading.
+- [Discover](/discover): Browse new books and chapters from indie writers around the world.
+- [Contests](/contests): Monthly writing contests for the Quill community.
+- [Feed](/feed): Latest updates from authors you follow.
+- [Pricing](/pricing): Quill Pro plans — $6/month or $60/year.
+- [Upgrade](/upgrade): Manage your Quill Pro subscription.
+- [Marketing kit](/marketing): Posters, captions, and a promo video to share Quill.
+
+## Optional
+
+- [Terms](/terms): Terms of service.
+- [Privacy](/privacy): Privacy notice.
+- [Refund policy](/refund-policy): 30-day money-back guarantee.
