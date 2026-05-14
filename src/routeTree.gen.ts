@@ -13,15 +13,19 @@ import { Route as UpgradeRouteImport } from './routes/upgrade'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as GoalsRouteImport } from './routes/goals'
+import { Route as FeedRouteImport } from './routes/feed'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as ContestsRouteImport } from './routes/contests'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as WriteIdRouteImport } from './routes/write.$id'
+import { Route as UPenNameRouteImport } from './routes/u.$penName'
 import { Route as ReadIdRouteImport } from './routes/read.$id'
 import { Route as PublishIdRouteImport } from './routes/publish.$id'
 import { Route as CoverIdRouteImport } from './routes/cover.$id'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
+import { Route as BookSlugRouteImport } from './routes/book.$slug'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const UpgradeRoute = UpgradeRouteImport.update({
@@ -44,6 +48,11 @@ const GoalsRoute = GoalsRouteImport.update({
   path: '/goals',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FeedRoute = FeedRouteImport.update({
+  id: '/feed',
+  path: '/feed',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiscoverRoute = DiscoverRouteImport.update({
   id: '/discover',
   path: '/discover',
@@ -59,6 +68,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -67,6 +81,11 @@ const IndexRoute = IndexRouteImport.update({
 const WriteIdRoute = WriteIdRouteImport.update({
   id: '/write/$id',
   path: '/write/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UPenNameRoute = UPenNameRouteImport.update({
+  id: '/u/$penName',
+  path: '/u/$penName',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ReadIdRoute = ReadIdRouteImport.update({
@@ -89,6 +108,11 @@ const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
   path: '/checkout/success',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookSlugRoute = BookSlugRouteImport.update({
+  id: '/book/$slug',
+  path: '/book/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -98,50 +122,62 @@ const ApiPublicPaymentsWebhookRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/contests': typeof ContestsRoute
   '/discover': typeof DiscoverRoute
+  '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
   '/upgrade': typeof UpgradeRoute
+  '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
+  '/u/$penName': typeof UPenNameRoute
   '/write/$id': typeof WriteIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/contests': typeof ContestsRoute
   '/discover': typeof DiscoverRoute
+  '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
   '/upgrade': typeof UpgradeRoute
+  '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
+  '/u/$penName': typeof UPenNameRoute
   '/write/$id': typeof WriteIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
   '/contests': typeof ContestsRoute
   '/discover': typeof DiscoverRoute
+  '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
   '/upgrade': typeof UpgradeRoute
+  '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
+  '/u/$penName': typeof UPenNameRoute
   '/write/$id': typeof WriteIdRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
@@ -149,66 +185,82 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/analytics'
     | '/auth'
     | '/contests'
     | '/discover'
+    | '/feed'
     | '/goals'
     | '/new'
     | '/profile'
     | '/upgrade'
+    | '/book/$slug'
     | '/checkout/success'
     | '/cover/$id'
     | '/publish/$id'
     | '/read/$id'
+    | '/u/$penName'
     | '/write/$id'
     | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/analytics'
     | '/auth'
     | '/contests'
     | '/discover'
+    | '/feed'
     | '/goals'
     | '/new'
     | '/profile'
     | '/upgrade'
+    | '/book/$slug'
     | '/checkout/success'
     | '/cover/$id'
     | '/publish/$id'
     | '/read/$id'
+    | '/u/$penName'
     | '/write/$id'
     | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
+    | '/analytics'
     | '/auth'
     | '/contests'
     | '/discover'
+    | '/feed'
     | '/goals'
     | '/new'
     | '/profile'
     | '/upgrade'
+    | '/book/$slug'
     | '/checkout/success'
     | '/cover/$id'
     | '/publish/$id'
     | '/read/$id'
+    | '/u/$penName'
     | '/write/$id'
     | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
   ContestsRoute: typeof ContestsRoute
   DiscoverRoute: typeof DiscoverRoute
+  FeedRoute: typeof FeedRoute
   GoalsRoute: typeof GoalsRoute
   NewRoute: typeof NewRoute
   ProfileRoute: typeof ProfileRoute
   UpgradeRoute: typeof UpgradeRoute
+  BookSlugRoute: typeof BookSlugRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   CoverIdRoute: typeof CoverIdRoute
   PublishIdRoute: typeof PublishIdRoute
   ReadIdRoute: typeof ReadIdRoute
+  UPenNameRoute: typeof UPenNameRoute
   WriteIdRoute: typeof WriteIdRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
@@ -243,6 +295,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GoalsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/feed': {
+      id: '/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof FeedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/discover': {
       id: '/discover'
       path: '/discover'
@@ -264,6 +323,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -276,6 +342,13 @@ declare module '@tanstack/react-router' {
       path: '/write/$id'
       fullPath: '/write/$id'
       preLoaderRoute: typeof WriteIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/u/$penName': {
+      id: '/u/$penName'
+      path: '/u/$penName'
+      fullPath: '/u/$penName'
+      preLoaderRoute: typeof UPenNameRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/read/$id': {
@@ -306,6 +379,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/book/$slug': {
+      id: '/book/$slug'
+      path: '/book/$slug'
+      fullPath: '/book/$slug'
+      preLoaderRoute: typeof BookSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -318,30 +398,24 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
   ContestsRoute: ContestsRoute,
   DiscoverRoute: DiscoverRoute,
+  FeedRoute: FeedRoute,
   GoalsRoute: GoalsRoute,
   NewRoute: NewRoute,
   ProfileRoute: ProfileRoute,
   UpgradeRoute: UpgradeRoute,
+  BookSlugRoute: BookSlugRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   CoverIdRoute: CoverIdRoute,
   PublishIdRoute: PublishIdRoute,
   ReadIdRoute: ReadIdRoute,
+  UPenNameRoute: UPenNameRoute,
   WriteIdRoute: WriteIdRoute,
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
