@@ -14,7 +14,230 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      beta_invites: {
+        Row: {
+          created_at: string
+          id: string
+          manuscript_id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          manuscript_id: string
+          token?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          manuscript_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "beta_invites_manuscript_id_fkey"
+            columns: ["manuscript_id"]
+            isOneToOne: false
+            referencedRelation: "manuscripts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chapters: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          manuscript_id: string
+          order: number
+          title: string
+          updated_at: string
+          word_count: number
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          manuscript_id: string
+          order?: number
+          title?: string
+          updated_at?: string
+          word_count?: number
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          manuscript_id?: string
+          order?: number
+          title?: string
+          updated_at?: string
+          word_count?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chapters_manuscript_id_fkey"
+            columns: ["manuscript_id"]
+            isOneToOne: false
+            referencedRelation: "manuscripts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      comments: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          manuscript_id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          manuscript_id: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          manuscript_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_manuscript_id_fkey"
+            columns: ["manuscript_id"]
+            isOneToOne: false
+            referencedRelation: "manuscripts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      likes: {
+        Row: {
+          created_at: string
+          manuscript_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          manuscript_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          manuscript_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "likes_manuscript_id_fkey"
+            columns: ["manuscript_id"]
+            isOneToOne: false
+            referencedRelation: "manuscripts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      manuscripts: {
+        Row: {
+          author_id: string
+          cover_url: string | null
+          created_at: string
+          genre: string | null
+          id: string
+          status: Database["public"]["Enums"]["manuscript_status"]
+          synopsis: string | null
+          title: string
+          updated_at: string
+          word_count: number
+        }
+        Insert: {
+          author_id: string
+          cover_url?: string | null
+          created_at?: string
+          genre?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["manuscript_status"]
+          synopsis?: string | null
+          title?: string
+          updated_at?: string
+          word_count?: number
+        }
+        Update: {
+          author_id?: string
+          cover_url?: string | null
+          created_at?: string
+          genre?: string | null
+          id?: string
+          status?: Database["public"]["Enums"]["manuscript_status"]
+          synopsis?: string | null
+          title?: string
+          updated_at?: string
+          word_count?: number
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          id: string
+          pen_name: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id: string
+          pen_name: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id?: string
+          pen_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      writing_goals: {
+        Row: {
+          current_streak: number
+          daily_target: number
+          last_logged_date: string | null
+          longest_streak: number
+          total_words: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_streak?: number
+          daily_target?: number
+          last_logged_date?: string | null
+          longest_streak?: number
+          total_words?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_streak?: number
+          daily_target?: number
+          last_logged_date?: string | null
+          longest_streak?: number
+          total_words?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +246,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      manuscript_status: "draft" | "published"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +373,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      manuscript_status: ["draft", "published"],
+    },
   },
 } as const
