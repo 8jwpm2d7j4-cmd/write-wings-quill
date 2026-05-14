@@ -103,14 +103,13 @@ function Profile() {
   );
 }
 
-function ComingSoon({ icon: Icon, title, subtitle }: { icon: any; title: string; subtitle: string }) {
+function NavCard({ to, icon: Icon, title }: { to: string; icon: any; title: string }) {
   return (
-    <div className="paper-card p-4">
+    <Link to={to} className="paper-card p-4 hover:bg-accent/40 transition flex flex-col items-start">
       <div className="grid h-8 w-8 place-items-center rounded-full bg-accent text-accent-foreground">
         <Icon className="h-4 w-4" />
       </div>
       <div className="mt-2 font-serif text-sm leading-tight">{title}</div>
-      <div className="mt-0.5 text-[11px] text-muted-foreground leading-tight">{subtitle}</div>
-    </div>
+    </Link>
   );
 }
