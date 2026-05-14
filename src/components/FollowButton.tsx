@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { awardIfNew } from "@/lib/achievements";
+import { notify } from "@/lib/notify";
 
 export function FollowButton({ authorId, size = "default" }: { authorId: string; size?: "sm" | "default" }) {
   const { user } = useAuth();
@@ -29,6 +30,7 @@ export function FollowButton({ authorId, size = "default" }: { authorId: string;
       setFollowing(true);
       // Award the followed author the "first follower" badge if applicable
       awardIfNew(authorId, "first_follower").catch(() => {});
+      notify({ userId: authorId, actorId: user.id, kind: "follow", message: "You have a new follower" }).catch(() => {});
     }
   };
 
