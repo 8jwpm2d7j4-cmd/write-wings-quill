@@ -116,6 +116,77 @@ export type Database = {
           },
         ]
       }
+      contest_entries: {
+        Row: {
+          contest_id: string
+          id: string
+          manuscript_id: string
+          submitted_at: string
+          user_id: string
+        }
+        Insert: {
+          contest_id: string
+          id?: string
+          manuscript_id: string
+          submitted_at?: string
+          user_id: string
+        }
+        Update: {
+          contest_id?: string
+          id?: string
+          manuscript_id?: string
+          submitted_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contest_entries_contest_id_fkey"
+            columns: ["contest_id"]
+            isOneToOne: false
+            referencedRelation: "contests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contests: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          max_words: number
+          members_only: boolean
+          min_words: number
+          prize: string
+          starts_at: string
+          theme: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          max_words?: number
+          members_only?: boolean
+          min_words?: number
+          prize?: string
+          starts_at?: string
+          theme: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          max_words?: number
+          members_only?: boolean
+          min_words?: number
+          prize?: string
+          starts_at?: string
+          theme?: string
+          title?: string
+        }
+        Relationships: []
+      }
       likes: {
         Row: {
           created_at: string
@@ -178,6 +249,39 @@ export type Database = {
           title?: string
           updated_at?: string
           word_count?: number
+        }
+        Relationships: []
+      }
+      memberships: {
+        Row: {
+          active: boolean
+          provider: string | null
+          provider_customer_id: string | null
+          renews_at: string | null
+          started_at: string
+          tier: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          provider?: string | null
+          provider_customer_id?: string | null
+          renews_at?: string | null
+          started_at?: string
+          tier?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          provider?: string | null
+          provider_customer_id?: string | null
+          renews_at?: string | null
+          started_at?: string
+          tier?: string
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
