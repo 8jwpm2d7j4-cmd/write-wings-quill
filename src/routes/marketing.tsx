@@ -9,6 +9,7 @@ import heroImg from "@/assets/marketing-hero.jpg";
 import post1 from "@/assets/social-post-1.jpg";
 import post2 from "@/assets/social-post-2.jpg";
 import promoVideo from "@/assets/promo-video.mp4.asset.json";
+import { SignupCounter } from "@/components/SignupCounter";
 
 export const Route = createFileRoute("/marketing")({
   component: () => <AppShell><Marketing /></AppShell>,
