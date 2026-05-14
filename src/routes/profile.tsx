@@ -18,6 +18,7 @@ function Profile() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const qc = useQueryClient();
+  const { isPro, subscription } = useSubscription();
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
