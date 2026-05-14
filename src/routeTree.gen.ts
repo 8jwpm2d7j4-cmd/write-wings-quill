@@ -19,6 +19,7 @@ import { Route as GoalsRouteImport } from './routes/goals'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as DiscoverRouteImport } from './routes/discover'
 import { Route as ContestsRouteImport } from './routes/contests'
+import { Route as BookmarksRouteImport } from './routes/bookmarks'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as IndexRouteImport } from './routes/index'
@@ -79,6 +80,11 @@ const DiscoverRoute = DiscoverRouteImport.update({
 const ContestsRoute = ContestsRouteImport.update({
   id: '/contests',
   path: '/contests',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BookmarksRoute = BookmarksRouteImport.update({
+  id: '/bookmarks',
+  path: '/bookmarks',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -142,6 +148,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/bookmarks': typeof BookmarksRoute
   '/contests': typeof ContestsRoute
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
@@ -165,6 +172,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/bookmarks': typeof BookmarksRoute
   '/contests': typeof ContestsRoute
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/analytics': typeof AnalyticsRoute
   '/auth': typeof AuthRoute
+  '/bookmarks': typeof BookmarksRoute
   '/contests': typeof ContestsRoute
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
@@ -214,6 +223,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analytics'
     | '/auth'
+    | '/bookmarks'
     | '/contests'
     | '/discover'
     | '/feed'
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analytics'
     | '/auth'
+    | '/bookmarks'
     | '/contests'
     | '/discover'
     | '/feed'
@@ -260,6 +271,7 @@ export interface FileRouteTypes {
     | '/'
     | '/analytics'
     | '/auth'
+    | '/bookmarks'
     | '/contests'
     | '/discover'
     | '/feed'
@@ -284,6 +296,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AnalyticsRoute: typeof AnalyticsRoute
   AuthRoute: typeof AuthRoute
+  BookmarksRoute: typeof BookmarksRoute
   ContestsRoute: typeof ContestsRoute
   DiscoverRoute: typeof DiscoverRoute
   FeedRoute: typeof FeedRoute
@@ -376,6 +389,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContestsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bookmarks': {
+      id: '/bookmarks'
+      path: '/bookmarks'
+      fullPath: '/bookmarks'
+      preLoaderRoute: typeof BookmarksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
@@ -460,6 +480,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AnalyticsRoute: AnalyticsRoute,
   AuthRoute: AuthRoute,
+  BookmarksRoute: BookmarksRoute,
   ContestsRoute: ContestsRoute,
   DiscoverRoute: DiscoverRoute,
   FeedRoute: FeedRoute,
@@ -482,3 +503,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
