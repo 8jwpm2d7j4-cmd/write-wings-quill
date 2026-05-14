@@ -62,6 +62,7 @@ function AuthPage() {
         <p className="mt-2 text-sm text-muted-foreground">
           Write with AI. Publish for free. Be read.
         </p>
+        <div className="mt-4 flex justify-center"><SignupCounter /></div>
       </div>
 
       <Button
