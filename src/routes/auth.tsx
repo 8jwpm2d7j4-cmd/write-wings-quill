@@ -110,7 +110,13 @@ function AuthPage() {
       </button>
 
       <p className="mt-auto pt-10 text-center text-xs text-muted-foreground">
-        By continuing you agree to write something true.
+        By continuing you agree to our{" "}
+        <Link to="/terms" className="underline">Terms</Link>,{" "}
+        <Link to="/privacy" className="underline">Privacy Notice</Link>, and{" "}
+        <Link to="/refund-policy" className="underline">Refund Policy</Link>.
+      </p>
+      <p className="mt-3 text-center text-xs text-muted-foreground">
+        See <Link to="/pricing" className="underline">pricing</Link>.
       </p>
     </div>
   );
