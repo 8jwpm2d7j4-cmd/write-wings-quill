@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UpgradeRouteImport } from './routes/upgrade'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as NewRouteImport } from './routes/new'
@@ -49,6 +50,11 @@ const TermsRoute = TermsRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundPolicyRoute = RefundPolicyRouteImport.update({
+  id: '/refund-policy',
+  path: '/refund-policy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/new': typeof NewRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/upgrade': typeof UpgradeRoute
@@ -211,6 +218,7 @@ export interface FileRoutesByTo {
   '/new': typeof NewRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/upgrade': typeof UpgradeRoute
@@ -240,6 +248,7 @@ export interface FileRoutesById {
   '/new': typeof NewRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/upgrade': typeof UpgradeRoute
@@ -270,6 +279,7 @@ export interface FileRouteTypes {
     | '/new'
     | '/privacy'
     | '/profile'
+    | '/refund-policy'
     | '/sitemap.xml'
     | '/terms'
     | '/upgrade'
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/new'
     | '/privacy'
     | '/profile'
+    | '/refund-policy'
     | '/sitemap.xml'
     | '/terms'
     | '/upgrade'
@@ -326,6 +337,7 @@ export interface FileRouteTypes {
     | '/new'
     | '/privacy'
     | '/profile'
+    | '/refund-policy'
     | '/sitemap.xml'
     | '/terms'
     | '/upgrade'
@@ -355,6 +367,7 @@ export interface RootRouteChildren {
   NewRoute: typeof NewRoute
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
+  RefundPolicyRoute: typeof RefundPolicyRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UpgradeRoute: typeof UpgradeRoute
@@ -390,6 +403,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refund-policy': {
+      id: '/refund-policy'
+      path: '/refund-policy'
+      fullPath: '/refund-policy'
+      preLoaderRoute: typeof RefundPolicyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -571,6 +591,7 @@ const rootRouteChildren: RootRouteChildren = {
   NewRoute: NewRoute,
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
+  RefundPolicyRoute: RefundPolicyRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UpgradeRoute: UpgradeRoute,
