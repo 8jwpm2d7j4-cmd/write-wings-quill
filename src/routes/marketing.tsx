@@ -148,9 +148,10 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 function PosterCard({ src, filename, small }: { src: string; filename: string; small?: boolean }) {
+  const altText = filename.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ");
   return (
     <div className="paper-card overflow-hidden">
-      <img src={src} alt="" className={`w-full object-cover ${small ? "aspect-square" : "aspect-video"}`} loading="lazy" />
+      <img src={src} alt={`Quill marketing poster: ${altText}`} className={`w-full object-cover ${small ? "aspect-square" : "aspect-video"}`} loading="lazy" />
       <div className="p-2">
         <a href={src} download={filename}
           className="w-full inline-flex items-center justify-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs hover:bg-accent">
