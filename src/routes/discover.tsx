@@ -110,7 +110,8 @@ function Discover() {
         </section>
       )}
 
-      <div className="mt-7 space-y-5">
+      <h2 className="mt-7 font-serif text-lg">All stories</h2>
+      <div className="mt-3 space-y-5">
         {isLoading && [0, 1, 2].map((i) => <div key={i} className="h-32 paper-card animate-pulse" />)}
         {!isLoading && filtered.length === 0 && (
           <div className="paper-card p-8 text-center text-sm text-muted-foreground">No stories match your filter.</div>
