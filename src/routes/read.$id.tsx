@@ -20,6 +20,8 @@ import { ReportButton } from "@/components/ReportButton";
 import { CommentItem } from "@/components/CommentItem";
 import { readingLabel } from "@/lib/reading";
 import { notify } from "@/lib/notify";
+import { ShareClipButton } from "@/components/ShareClipButton";
+import { EmbedSnippet } from "@/components/EmbedSnippet";
 
 export const Route = createFileRoute("/read/$id")({ component: Read });
 
