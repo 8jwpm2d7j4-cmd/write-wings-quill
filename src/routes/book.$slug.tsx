@@ -57,7 +57,7 @@ function BookLanding() {
             description: m.synopsis,
             image: m.cover_url,
             genre: m.genre,
-          }),
+          }).replace(/</g, "\\u003c"),
         }}
       />
     </div>
