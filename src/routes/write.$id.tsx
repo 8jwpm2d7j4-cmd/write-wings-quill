@@ -213,10 +213,21 @@ function DictateButton({ onTranscript }: { onTranscript: (t: string) => void }) 
   );
 }
 
-function ChapterStrip({ chapters, activeId, onSelect, onAdd }: {
+function ChapterStrip({ chapters, activeId, onSelect, onAdd, onImport }: {
   chapters: { id: string; title: string }[]; activeId: string | null;
   onSelect: (id: string) => void; onAdd: () => void;
+  onImport: (files: FileList) => Promise<void>;
 }) {
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [importing, setImporting] = useState(false);
+  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    setImporting(true);
+    try { await onImport(e.target.files); } finally {
+      setImporting(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
   return (
     <div className="flex gap-2 overflow-x-auto px-3 py-2 border-b border-border bg-card/50">
       {chapters.map((c, i) => (
@@ -231,9 +242,25 @@ function ChapterStrip({ chapters, activeId, onSelect, onAdd }: {
           {i + 1}. {c.title}
         </button>
       ))}
-      <button onClick={onAdd} className="shrink-0 grid place-items-center h-7 w-7 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground">
+      <button onClick={onAdd} className="shrink-0 grid place-items-center h-7 w-7 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground" title="New chapter">
         <Plus className="h-4 w-4" />
       </button>
+      <button
+        onClick={() => fileRef.current?.click()}
+        disabled={importing}
+        className="shrink-0 grid place-items-center h-7 w-7 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground disabled:opacity-50"
+        title="Import .docx, .txt, or .md"
+      >
+        {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+      </button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept=".docx,.txt,.md,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown"
+        multiple
+        className="hidden"
+        onChange={handleFiles}
+      />
     </div>
   );
 }
