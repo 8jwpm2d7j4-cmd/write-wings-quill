@@ -813,6 +813,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _seed_create_user: {
+        Args: { _email: string; _uid: string }
+        Returns: undefined
+      }
       gen_referral_code: { Args: never; Returns: string }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
