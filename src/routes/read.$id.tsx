@@ -93,18 +93,32 @@ function Read() {
           <p className="mt-1 text-sm text-muted-foreground">by {(m as any).profiles?.pen_name ?? "Anonymous"}</p>
           {m.synopsis && <p className="mt-4 text-sm text-foreground/80">{m.synopsis}</p>}
           <div className="mt-3 text-xs text-muted-foreground">{m.word_count.toLocaleString()} words · {likes.length} likes</div>
+          <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+            <FollowButton authorId={m.author_id} size="sm" />
+            <TipJar authorId={m.author_id} manuscriptId={m.id} authorName={(m as any).profiles?.pen_name ?? "the author"} />
+          </div>
         </div>
 
         <article className="mt-10 space-y-10 font-serif text-[17px] leading-relaxed">
-          {chapters.map((c: any) => (
-            <section key={c.id}>
-              <div className="flex items-center justify-between border-b border-border pb-2 mb-4">
-                <h2 className="font-serif text-2xl">{c.title}</h2>
-                <NarrateButton text={`${c.title}. ${c.content}`} />
-              </div>
-              {c.content.split(/\n\n+/).map((p: string, i: number) => <p key={i} className="mb-4">{p}</p>)}
-            </section>
-          ))}
+          {chapters.map((c: any) => {
+            const locked = c.is_paid && !unlockedSet.has(c.id) && user?.id !== m.author_id;
+            return (
+              <section key={c.id}>
+                <div className="flex items-center justify-between border-b border-border pb-2 mb-4">
+                  <h2 className="font-serif text-2xl">{c.title}</h2>
+                  {!locked && <NarrateButton text={`${c.title}. ${c.content}`} />}
+                </div>
+                {locked ? (
+                  <PaidChapterGate chapterId={c.id} chapterTitle={c.title} priceCents={c.unlock_price_cents ?? 99} />
+                ) : (
+                  <>
+                    {c.content.split(/\n\n+/).map((p: string, i: number) => <p key={i} className="mb-4">{p}</p>)}
+                    <Reactions chapterId={c.id} />
+                  </>
+                )}
+              </section>
+            );
+          })}
         </article>
 
         <section className="mt-12">
