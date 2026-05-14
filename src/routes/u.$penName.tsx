@@ -89,6 +89,23 @@ function Author() {
 
       <h2 className="mt-8 font-serif text-xl">Achievements</h2>
       <div className="mt-3"><AchievementWall userId={profile.id} /></div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            mainEntity: {
+              "@type": "Person",
+              name: profile.pen_name,
+              description: profile.bio || undefined,
+              image: profile.avatar_url || undefined,
+              url: `https://write-wings-quill.lovable.app/u/${encodeURIComponent(profile.pen_name)}`,
+            },
+          }).replace(/</g, "\\u003c"),
+        }}
+      />
     </div>
   );
 }
