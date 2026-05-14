@@ -69,16 +69,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
       { property: "og:type", content: "website" },
       { property: "og:site_name", content: "Quill" },
-      { property: "og:title", content: "Quill — Write, publish, share your stories" },
-      { property: "og:description", content: "Draft with AI. Design covers. Publish to Kindle. Earn from your readers." },
+      { property: "og:title", content: "Quill — Write, publish, and share your stories" },
+      { property: "og:description", content: "The beautiful storytelling app for writers. Draft chapters with AI, design covers, publish to Kindle, build a reader following, and earn from tips and paid chapters." },
       { property: "og:image", content: "https://write-wings-quill.lovable.app/og-image.jpg" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "1200" },
       { property: "og:locale", content: "en_US" },
 
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Quill — Write the book in you" },
-      { name: "twitter:description", content: "AI co-writer, AI covers, EPUB export, Kindle-ready. Self-publish in days." },
+      { name: "twitter:title", content: "Quill — Write, publish, and share your stories" },
+      { name: "twitter:description", content: "The beautiful storytelling app for writers. Draft chapters with AI, design covers, publish to Kindle, build a reader following, and earn from tips and paid chapters." },
       { name: "twitter:image", content: "https://write-wings-quill.lovable.app/og-image.jpg" },
     ],
     links: [
