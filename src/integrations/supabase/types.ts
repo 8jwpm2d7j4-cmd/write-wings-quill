@@ -547,6 +547,7 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          bonus_pro_until: string | null
           created_at: string
           daily_reminder_at: string | null
           email_notifications: boolean
@@ -554,11 +555,14 @@ export type Database = {
           id: string
           onboarded: boolean
           pen_name: string
+          referral_code: string | null
+          referred_by: string | null
           updated_at: string
         }
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          bonus_pro_until?: string | null
           created_at?: string
           daily_reminder_at?: string | null
           email_notifications?: boolean
@@ -566,11 +570,14 @@ export type Database = {
           id: string
           onboarded?: boolean
           pen_name: string
+          referral_code?: string | null
+          referred_by?: string | null
           updated_at?: string
         }
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          bonus_pro_until?: string | null
           created_at?: string
           daily_reminder_at?: string | null
           email_notifications?: boolean
@@ -578,9 +585,19 @@ export type Database = {
           id?: string
           onboarded?: boolean
           pen_name?: string
+          referral_code?: string | null
+          referred_by?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_referred_by_fkey"
+            columns: ["referred_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reactions: {
         Row: {
@@ -796,10 +813,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      gen_referral_code: { Args: never; Returns: string }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
       }
+      public_member_count: { Args: never; Returns: number }
+      redeem_referral: { Args: { _code: string }; Returns: Json }
     }
     Enums: {
       manuscript_status: "draft" | "published"
