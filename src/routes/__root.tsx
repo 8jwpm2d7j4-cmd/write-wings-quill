@@ -88,8 +88,15 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <Outlet />
+        <OnboardingGate />
         <Toaster richColors closeButton position="top-center" />
       </AuthProvider>
     </QueryClientProvider>
   );
+}
+
+function OnboardingGate() {
+  const { user } = useAuth();
+  if (!user) return null;
+  return <OnboardingModal />;
 }
