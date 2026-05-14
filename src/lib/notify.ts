@@ -14,6 +14,6 @@ export async function notify(opts: {
     _user_id: opts.userId,
     _kind: opts.kind,
     _message: opts.message,
-    _manuscript_id: opts.manuscriptId ?? null,
+    _manuscript_id: opts.manuscriptId ?? undefined,
   });
 }
