@@ -12,6 +12,9 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { ThemeProvider } from "@/lib/theme";
+import { useEffect } from "react";
+import { redeemStoredRef } from "@/lib/referral";
+import { toast } from "sonner";
 
 function NotFoundComponent() {
   return (
