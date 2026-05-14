@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as UpgradeRouteImport } from './routes/upgrade'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NewRouteImport } from './routes/new'
+import { Route as ManageRouteImport } from './routes/manage'
 import { Route as GoalsRouteImport } from './routes/goals'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as DiscoverRouteImport } from './routes/discover'
@@ -41,6 +42,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const NewRoute = NewRouteImport.update({
   id: '/new',
   path: '/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ManageRoute = ManageRouteImport.update({
+  id: '/manage',
+  path: '/manage',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GoalsRoute = GoalsRouteImport.update({
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
+  '/manage': typeof ManageRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
   '/upgrade': typeof UpgradeRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
+  '/manage': typeof ManageRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
   '/upgrade': typeof UpgradeRoute
@@ -169,6 +177,7 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
+  '/manage': typeof ManageRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
   '/upgrade': typeof UpgradeRoute
@@ -191,6 +200,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/feed'
     | '/goals'
+    | '/manage'
     | '/new'
     | '/profile'
     | '/upgrade'
@@ -211,6 +221,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/feed'
     | '/goals'
+    | '/manage'
     | '/new'
     | '/profile'
     | '/upgrade'
@@ -231,6 +242,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/feed'
     | '/goals'
+    | '/manage'
     | '/new'
     | '/profile'
     | '/upgrade'
@@ -252,6 +264,7 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   FeedRoute: typeof FeedRoute
   GoalsRoute: typeof GoalsRoute
+  ManageRoute: typeof ManageRoute
   NewRoute: typeof NewRoute
   ProfileRoute: typeof ProfileRoute
   UpgradeRoute: typeof UpgradeRoute
@@ -286,6 +299,13 @@ declare module '@tanstack/react-router' {
       path: '/new'
       fullPath: '/new'
       preLoaderRoute: typeof NewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/manage': {
+      id: '/manage'
+      path: '/manage'
+      fullPath: '/manage'
+      preLoaderRoute: typeof ManageRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/goals': {
@@ -404,6 +424,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   FeedRoute: FeedRoute,
   GoalsRoute: GoalsRoute,
+  ManageRoute: ManageRoute,
   NewRoute: NewRoute,
   ProfileRoute: ProfileRoute,
   UpgradeRoute: UpgradeRoute,

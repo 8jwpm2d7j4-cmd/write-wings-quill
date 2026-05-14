@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { LogOut, Trophy, BarChart3, Rss, Crown, ChevronRight, Sparkles } from "lucide-react";
+import { LogOut, Trophy, BarChart3, Rss, Crown, ChevronRight, Sparkles, Library } from "lucide-react";
 import { toast } from "sonner";
 import { useSubscription } from "@/hooks/useSubscription";
 import { AchievementWall } from "@/components/AchievementWall";
@@ -81,9 +81,10 @@ function Profile() {
       </div>
 
       <h2 className="mt-8 font-serif text-xl">Explore</h2>
-      <div className="mt-3 grid grid-cols-3 gap-3">
-        <NavCard to="/contests" icon={Trophy} title="Contests" />
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <NavCard to="/manage" icon={Library} title="Manage books" />
         <NavCard to="/analytics" icon={BarChart3} title="Analytics" />
+        <NavCard to="/contests" icon={Trophy} title="Contests" />
         <NavCard to="/feed" icon={Rss} title="Feed" />
       </div>
 

@@ -6,8 +6,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Flame, Target as TargetIcon, TrendingUp } from "lucide-react";
+import { Flame, Target as TargetIcon, TrendingUp, CalendarDays } from "lucide-react";
 import { toast } from "sonner";
+import { StreakCalendar } from "@/components/StreakCalendar";
 
 export const Route = createFileRoute("/goals")({ component: () => <AppShell><Goals /></AppShell> });
 
@@ -22,6 +23,12 @@ function Goals() {
     enabled: !!user,
   });
   useEffect(() => { if (goals?.daily_target) setTarget(goals.daily_target); }, [goals?.daily_target]);
+
+  const { data: dailyLog = [] } = useQuery({
+    queryKey: ["daily-log", user?.id],
+    queryFn: async () => (await supabase.from("daily_word_log").select("date,words").eq("user_id", user!.id).order("date", { ascending: true }).limit(120)).data ?? [],
+    enabled: !!user,
+  });
 
   const { data: manuscripts = [] } = useQuery({
     queryKey: ["manuscripts", user?.id],
@@ -68,6 +75,13 @@ function Goals() {
         </div>
         <Slider value={[target]} min={100} max={2500} step={50} onValueChange={(v) => setTarget(v[0])} className="mt-4" />
         <Button onClick={save} className="mt-4 w-full rounded-full">Save goal</Button>
+      </div>
+
+      <div className="mt-5">
+        <div className="mb-2 flex items-center gap-1.5 text-xs uppercase tracking-widest text-muted-foreground">
+          <CalendarDays className="h-3.5 w-3.5" />Activity
+        </div>
+        <StreakCalendar entries={dailyLog as any} target={target} />
       </div>
 
       <div className="mt-5 paper-card p-5">
