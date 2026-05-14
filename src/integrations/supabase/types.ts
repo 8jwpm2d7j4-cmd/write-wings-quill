@@ -821,13 +821,45 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_achievement: {
+        Args: { _code: string; _target_user?: string }
+        Returns: boolean
+      }
       gen_referral_code: { Args: never; Returns: string }
+      get_my_profile_settings: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          bio: string
+          bonus_pro_until: string
+          created_at: string
+          daily_reminder_at: string
+          email_notifications: boolean
+          genres: string[]
+          id: string
+          onboarded: boolean
+          pen_name: string
+          referral_code: string
+          referred_by: string
+          updated_at: string
+        }[]
+      }
       has_active_subscription: {
         Args: { check_env?: string; user_uuid: string }
         Returns: boolean
       }
+      my_invited_count: { Args: never; Returns: number }
       public_member_count: { Args: never; Returns: number }
       redeem_referral: { Args: { _code: string }; Returns: Json }
+      send_notification: {
+        Args: {
+          _kind: string
+          _manuscript_id?: string
+          _message: string
+          _user_id: string
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       manuscript_status: "draft" | "published"

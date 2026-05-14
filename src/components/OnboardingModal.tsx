@@ -19,7 +19,7 @@ export function OnboardingModal() {
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("onboarded,pen_name").eq("id", user.id).single()
+    supabase.rpc("get_my_profile_settings").maybeSingle()
       .then(({ data }) => {
         if (data && !data.onboarded) {
           setPenName(data.pen_name ?? "");

@@ -23,7 +23,7 @@ function Profile() {
 
   const { data: profile } = useQuery({
     queryKey: ["profile", user?.id],
-    queryFn: async () => (await supabase.from("profiles").select("*").eq("id", user!.id).single()).data,
+    queryFn: async () => (await supabase.rpc("get_my_profile_settings").maybeSingle()).data,
     enabled: !!user,
   });
 

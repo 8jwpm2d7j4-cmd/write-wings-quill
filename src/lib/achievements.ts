@@ -15,15 +15,12 @@ const ACHIEVEMENTS = {
 export type AchievementCode = keyof typeof ACHIEVEMENTS;
 
 export async function awardIfNew(userId: string, code: AchievementCode) {
-  const { data: existing } = await supabase
-    .from("user_achievements")
-    .select("code")
-    .eq("user_id", userId)
-    .eq("code", code)
-    .maybeSingle();
-  if (existing) return false;
-  const { error } = await supabase.from("user_achievements").insert({ user_id: userId, code });
-  if (error) return false;
+  // Server-side validates eligibility and idempotently inserts.
+  const { data, error } = await supabase.rpc("award_achievement", {
+    _code: code,
+    _target_user: userId,
+  });
+  if (error || !data) return false;
   const a = ACHIEVEMENTS[code];
   toast.success(`${a.icon} Achievement unlocked: ${a.title}`);
   return true;

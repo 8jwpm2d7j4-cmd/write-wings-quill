@@ -22,7 +22,10 @@ function Author() {
 
   const { data: profile } = useQuery({
     queryKey: ["author-profile", penName],
-    queryFn: async () => (await supabase.from("profiles").select("*").eq("pen_name", penName).maybeSingle()).data,
+    queryFn: async () =>
+      (await supabase.from("profiles")
+        .select("id,pen_name,bio,avatar_url,genres,created_at,updated_at")
+        .eq("pen_name", penName).maybeSingle()).data,
   });
 
   const { data: books = [] } = useQuery({

@@ -28,14 +28,14 @@ function Invite() {
   const { data: prof, refetch } = useQuery({
     queryKey: ["my-ref", user?.id],
     enabled: !!user,
-    queryFn: async () => (await supabase.from("profiles").select("referral_code,referred_by,bonus_pro_until").eq("id", user!.id).maybeSingle()).data,
+    queryFn: async () => (await supabase.rpc("get_my_profile_settings").maybeSingle()).data,
   });
   const { data: invitedCount = 0 } = useQuery({
     queryKey: ["invited-count", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      const { count } = await supabase.from("profiles").select("id", { count: "exact", head: true }).eq("referred_by", user!.id);
-      return count ?? 0;
+      const { data } = await supabase.rpc("my_invited_count");
+      return (data as number | null) ?? 0;
     },
   });
 

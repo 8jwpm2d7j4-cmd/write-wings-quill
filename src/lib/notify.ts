@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type NotifKind = "like" | "comment" | "follow" | "tip" | "unlock" | "system";
+export type NotifKind = "like" | "comment" | "follow";
 
 export async function notify(opts: {
   userId: string; // recipient
@@ -10,11 +10,10 @@ export async function notify(opts: {
   manuscriptId?: string | null;
 }) {
   if (opts.actorId && opts.actorId === opts.userId) return; // don't notify self
-  await supabase.from("notifications").insert({
-    user_id: opts.userId,
-    actor_id: opts.actorId ?? null,
-    kind: opts.kind,
-    message: opts.message,
-    manuscript_id: opts.manuscriptId ?? null,
+  await supabase.rpc("send_notification", {
+    _user_id: opts.userId,
+    _kind: opts.kind,
+    _message: opts.message,
+    _manuscript_id: opts.manuscriptId ?? undefined,
   });
 }
