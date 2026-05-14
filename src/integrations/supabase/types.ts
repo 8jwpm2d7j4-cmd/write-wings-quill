@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          code: string
+          description: string
+          icon: string
+          title: string
+        }
+        Insert: {
+          code: string
+          description: string
+          icon?: string
+          title: string
+        }
+        Update: {
+          code?: string
+          description?: string
+          icon?: string
+          title?: string
+        }
+        Relationships: []
+      }
       beta_invites: {
         Row: {
           created_at: string
@@ -43,14 +64,70 @@ export type Database = {
           },
         ]
       }
+      chapter_revisions: {
+        Row: {
+          chapter_id: string
+          content: string
+          created_at: string
+          id: string
+          word_count: number
+        }
+        Insert: {
+          chapter_id: string
+          content: string
+          created_at?: string
+          id?: string
+          word_count?: number
+        }
+        Update: {
+          chapter_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          word_count?: number
+        }
+        Relationships: []
+      }
+      chapter_unlocks: {
+        Row: {
+          amount_cents: number
+          chapter_id: string
+          created_at: string
+          environment: string
+          id: string
+          paddle_transaction_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          chapter_id: string
+          created_at?: string
+          environment?: string
+          id?: string
+          paddle_transaction_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          chapter_id?: string
+          created_at?: string
+          environment?: string
+          id?: string
+          paddle_transaction_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       chapters: {
         Row: {
           content: string
           created_at: string
           id: string
+          is_paid: boolean
           manuscript_id: string
           order: number
           title: string
+          unlock_price_cents: number | null
           updated_at: string
           word_count: number
         }
@@ -58,9 +135,11 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          is_paid?: boolean
           manuscript_id: string
           order?: number
           title?: string
+          unlock_price_cents?: number | null
           updated_at?: string
           word_count?: number
         }
@@ -68,9 +147,11 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          is_paid?: boolean
           manuscript_id?: string
           order?: number
           title?: string
+          unlock_price_cents?: number | null
           updated_at?: string
           word_count?: number
         }
@@ -87,6 +168,7 @@ export type Database = {
       comments: {
         Row: {
           body: string
+          chapter_id: string | null
           created_at: string
           id: string
           manuscript_id: string
@@ -94,6 +176,7 @@ export type Database = {
         }
         Insert: {
           body: string
+          chapter_id?: string | null
           created_at?: string
           id?: string
           manuscript_id: string
@@ -101,6 +184,7 @@ export type Database = {
         }
         Update: {
           body?: string
+          chapter_id?: string | null
           created_at?: string
           id?: string
           manuscript_id?: string
@@ -187,6 +271,42 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_word_log: {
+        Row: {
+          date: string
+          user_id: string
+          words: number
+        }
+        Insert: {
+          date: string
+          user_id: string
+          words?: number
+        }
+        Update: {
+          date?: string
+          user_id?: string
+          words?: number
+        }
+        Relationships: []
+      }
+      follows: {
+        Row: {
+          created_at: string
+          follower_id: string
+          following_id: string
+        }
+        Insert: {
+          created_at?: string
+          follower_id: string
+          following_id: string
+        }
+        Update: {
+          created_at?: string
+          follower_id?: string
+          following_id?: string
+        }
+        Relationships: []
+      }
       likes: {
         Row: {
           created_at: string
@@ -220,6 +340,8 @@ export type Database = {
           created_at: string
           genre: string | null
           id: string
+          is_featured: boolean
+          slug: string | null
           status: Database["public"]["Enums"]["manuscript_status"]
           synopsis: string | null
           title: string
@@ -232,6 +354,8 @@ export type Database = {
           created_at?: string
           genre?: string | null
           id?: string
+          is_featured?: boolean
+          slug?: string | null
           status?: Database["public"]["Enums"]["manuscript_status"]
           synopsis?: string | null
           title?: string
@@ -244,6 +368,8 @@ export type Database = {
           created_at?: string
           genre?: string | null
           id?: string
+          is_featured?: boolean
+          slug?: string | null
           status?: Database["public"]["Enums"]["manuscript_status"]
           synopsis?: string | null
           title?: string
@@ -285,12 +411,46 @@ export type Database = {
         }
         Relationships: []
       }
+      notes: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          kind: string
+          manuscript_id: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          manuscript_id: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          manuscript_id?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          daily_reminder_at: string | null
+          email_notifications: boolean
+          genres: string[] | null
           id: string
+          onboarded: boolean
           pen_name: string
           updated_at: string
         }
@@ -298,7 +458,11 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          daily_reminder_at?: string | null
+          email_notifications?: boolean
+          genres?: string[] | null
           id: string
+          onboarded?: boolean
           pen_name: string
           updated_at?: string
         }
@@ -306,9 +470,61 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          daily_reminder_at?: string | null
+          email_notifications?: boolean
+          genres?: string[] | null
           id?: string
+          onboarded?: boolean
           pen_name?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      reactions: {
+        Row: {
+          chapter_id: string
+          created_at: string
+          emoji: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          chapter_id: string
+          created_at?: string
+          emoji: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          chapter_id?: string
+          created_at?: string
+          emoji?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reading_streaks: {
+        Row: {
+          current_streak: number
+          last_read_date: string | null
+          longest_streak: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_streak?: number
+          last_read_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_streak?: number
+          last_read_date?: string | null
+          longest_streak?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -359,6 +575,65 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      tips: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          environment: string
+          from_user_id: string
+          id: string
+          manuscript_id: string | null
+          paddle_transaction_id: string | null
+          to_user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          environment?: string
+          from_user_id: string
+          id?: string
+          manuscript_id?: string | null
+          paddle_transaction_id?: string | null
+          to_user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          environment?: string
+          from_user_id?: string
+          id?: string
+          manuscript_id?: string | null
+          paddle_transaction_id?: string | null
+          to_user_id?: string
+        }
+        Relationships: []
+      }
+      user_achievements: {
+        Row: {
+          code: string
+          earned_at: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          earned_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          earned_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_code_fkey"
+            columns: ["code"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       writing_goals: {
         Row: {
