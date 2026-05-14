@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { BookOpen, Compass, PenSquare, Target, User } from "lucide-react";
+import { BookOpen, Compass, PenSquare, Trophy, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type Tab = { to: string; label: string; icon: typeof BookOpen; highlight?: boolean };
@@ -7,7 +7,7 @@ const tabs: Tab[] = [
   { to: "/", label: "Library", icon: BookOpen },
   { to: "/discover", label: "Discover", icon: Compass },
   { to: "/new", label: "Write", icon: PenSquare, highlight: true },
-  { to: "/goals", label: "Goals", icon: Target },
+  { to: "/contests", label: "Contests", icon: Trophy },
   { to: "/profile", label: "You", icon: User },
 ];
 
