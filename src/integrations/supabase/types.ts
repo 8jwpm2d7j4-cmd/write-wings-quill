@@ -340,6 +340,27 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_ai_usage: {
+        Row: {
+          count: number
+          date: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          count?: number
+          date: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          count?: number
+          date?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_word_log: {
         Row: {
           date: string
@@ -825,7 +846,9 @@ export type Database = {
         Args: { _code: string; _target_user?: string }
         Returns: boolean
       }
+      bump_ai_usage: { Args: never; Returns: number }
       gen_referral_code: { Args: never; Returns: string }
+      get_chapter_content: { Args: { _chapter_id: string }; Returns: string }
       get_my_profile_settings: {
         Args: never
         Returns: {
