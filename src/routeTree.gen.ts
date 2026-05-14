@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UpgradeRouteImport } from './routes/upgrade'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as ManageRouteImport } from './routes/manage'
@@ -32,6 +33,11 @@ import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/publi
 const UpgradeRoute = UpgradeRouteImport.update({
   id: '/upgrade',
   path: '/upgrade',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -137,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/manage': typeof ManageRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/upgrade': typeof UpgradeRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/manage': typeof ManageRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/upgrade': typeof UpgradeRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -180,6 +188,7 @@ export interface FileRoutesById {
   '/manage': typeof ManageRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/upgrade': typeof UpgradeRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
@@ -203,6 +212,7 @@ export interface FileRouteTypes {
     | '/manage'
     | '/new'
     | '/profile'
+    | '/sitemap.xml'
     | '/upgrade'
     | '/book/$slug'
     | '/checkout/success'
@@ -224,6 +234,7 @@ export interface FileRouteTypes {
     | '/manage'
     | '/new'
     | '/profile'
+    | '/sitemap.xml'
     | '/upgrade'
     | '/book/$slug'
     | '/checkout/success'
@@ -245,6 +256,7 @@ export interface FileRouteTypes {
     | '/manage'
     | '/new'
     | '/profile'
+    | '/sitemap.xml'
     | '/upgrade'
     | '/book/$slug'
     | '/checkout/success'
@@ -267,6 +279,7 @@ export interface RootRouteChildren {
   ManageRoute: typeof ManageRoute
   NewRoute: typeof NewRoute
   ProfileRoute: typeof ProfileRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   UpgradeRoute: typeof UpgradeRoute
   BookSlugRoute: typeof BookSlugRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/upgrade'
       fullPath: '/upgrade'
       preLoaderRoute: typeof UpgradeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -427,6 +447,7 @@ const rootRouteChildren: RootRouteChildren = {
   ManageRoute: ManageRoute,
   NewRoute: NewRoute,
   ProfileRoute: ProfileRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   UpgradeRoute: UpgradeRoute,
   BookSlugRoute: BookSlugRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
@@ -440,3 +461,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
