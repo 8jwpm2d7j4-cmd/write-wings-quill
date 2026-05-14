@@ -78,18 +78,41 @@ async function handleTransactionCompleted(data: any, env: PaddleEnv) {
   } else if (kind === 'chapter_unlock') {
     const chapterId = customData.chapterId;
     if (!chapterId) return;
+
+    // Verify the actual paid amount from Paddle (not client-supplied customData)
+    const paidCents = Math.round(parseFloat(data?.details?.totals?.total ?? '0'));
+    if (!paidCents) {
+      console.warn('Skipping chapter_unlock: missing paid total', { id });
+      return;
+    }
+
+    const { data: ch } = await getSupabase()
+      .from('chapters')
+      .select('manuscript_id, title, is_paid, unlock_price_cents, manuscripts!inner(author_id)')
+      .eq('id', chapterId)
+      .maybeSingle();
+
+    if (!ch) {
+      console.warn('Skipping chapter_unlock: chapter not found', { chapterId });
+      return;
+    }
+    if (!(ch as any).is_paid) {
+      console.warn('Skipping chapter_unlock: chapter is not paid', { chapterId });
+      return;
+    }
+    const expected = (ch as any).unlock_price_cents ?? 0;
+    if (paidCents < expected) {
+      console.warn('Skipping chapter_unlock: paid amount below chapter price', { chapterId, paidCents, expected });
+      return;
+    }
+
     await getSupabase().from('chapter_unlocks').upsert({
       user_id: userId,
       chapter_id: chapterId,
-      amount_cents: amountCents,
+      amount_cents: paidCents,
       paddle_transaction_id: id,
       environment: env,
     }, { onConflict: 'user_id,chapter_id' });
-    const { data: ch } = await getSupabase()
-      .from('chapters')
-      .select('manuscript_id, title, manuscripts!inner(author_id)')
-      .eq('id', chapterId)
-      .maybeSingle();
     const authorId = (ch as any)?.manuscripts?.author_id;
     if (authorId && authorId !== userId) {
       await getSupabase().from('notifications').insert({
@@ -97,7 +120,7 @@ async function handleTransactionCompleted(data: any, env: PaddleEnv) {
         actor_id: userId,
         kind: 'chapter_purchased',
         manuscript_id: (ch as any).manuscript_id,
-        message: `A reader unlocked "${(ch as any).title}" for $${(amountCents / 100).toFixed(2)}`,
+        message: `A reader unlocked "${(ch as any).title}" for $${(paidCents / 100).toFixed(2)}`,
       });
     }
   }
