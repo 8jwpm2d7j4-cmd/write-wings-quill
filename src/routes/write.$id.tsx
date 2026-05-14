@@ -157,7 +157,7 @@ function WritePage() {
         <SettingsSheet manuscript={manuscript} onPublish={togglePublish} />
       </header>
 
-      <ChapterStrip chapters={chapters} activeId={activeChapterId} onSelect={setActiveChapterId} onAdd={addChapter} />
+      <ChapterStrip chapters={chapters} activeId={activeChapterId} onSelect={setActiveChapterId} onAdd={addChapter} onImport={importFiles} />
 
       <div className="flex-1 px-5 py-4">
         <input
