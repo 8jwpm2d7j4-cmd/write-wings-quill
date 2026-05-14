@@ -109,21 +109,30 @@ function Publish() {
       <section className="mt-5 paper-card p-5">
         <h2 className="font-serif text-lg">Beta reader invites</h2>
         <p className="mt-1 text-sm text-muted-foreground">Private links — only people with the link can read.</p>
-        <Button variant="outline" onClick={newInvite} className="mt-4 w-full rounded-full">Generate invite link</Button>
-        <ul className="mt-3 space-y-2">
-          {invites.map((i: any) => {
-            const url = `${window.location.origin}/beta/${i.token}`;
-            return (
-              <li key={i.id} className="flex items-center gap-2 rounded-lg border border-border p-2 text-xs">
-                <code className="flex-1 truncate">{url}</code>
-                <button onClick={() => navigator.clipboard.writeText(url).then(() => toast.success("Copied"))}
-                        className="grid h-7 w-7 place-items-center rounded hover:bg-accent">
-                  <Copy className="h-3.5 w-3.5" />
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        {isPro ? (
+          <>
+            <Button variant="outline" onClick={newInvite} className="mt-4 w-full rounded-full">Generate invite link</Button>
+            <ul className="mt-3 space-y-2">
+              {invites.map((i: any) => {
+                const url = `${window.location.origin}/beta/${i.token}`;
+                return (
+                  <li key={i.id} className="flex items-center gap-2 rounded-lg border border-border p-2 text-xs">
+                    <code className="flex-1 truncate">{url}</code>
+                    <button onClick={() => navigator.clipboard.writeText(url).then(() => toast.success("Copied"))}
+                            className="grid h-7 w-7 place-items-center rounded hover:bg-accent">
+                      <Copy className="h-3.5 w-3.5" />
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        ) : (
+          <div className="mt-4 rounded-lg border border-dashed border-border p-4 text-center">
+            <p className="text-sm text-muted-foreground">Beta-reader invites are a Pro feature.</p>
+            <SubscribeButton className="mt-3 w-full rounded-full" />
+          </div>
+        )}
       </section>
     </div>
   );
