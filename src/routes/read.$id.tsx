@@ -39,7 +39,7 @@ function Read() {
   });
   const { data: chapters = [] } = useQuery({
     queryKey: ["read-ch", id],
-    queryFn: async () => (await supabase.from("chapters").select("*").eq("manuscript_id", id).order("order")).data ?? [],
+    queryFn: async () => (await supabase.from("chapters").select("id,manuscript_id,title,order,word_count,is_paid,unlock_price_cents,created_at,updated_at").eq("manuscript_id", id).order("order")).data ?? [],
   });
   const { data: likes = [] } = useQuery({
     queryKey: ["likes", id],
