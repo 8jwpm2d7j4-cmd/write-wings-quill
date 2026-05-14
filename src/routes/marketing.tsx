@@ -144,7 +144,7 @@ function Marketing() {
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <div className="text-xs uppercase tracking-widest text-muted-foreground">{children}</div>;
+  return <h2 className="font-serif text-base m-0">{children}</h2>;
 }
 
 function PosterCard({ src, filename, small }: { src: string; filename: string; small?: boolean }) {
