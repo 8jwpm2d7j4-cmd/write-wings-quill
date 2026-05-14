@@ -149,6 +149,14 @@ function RootComponent() {
 
 function OnboardingGate() {
   const { user } = useAuth();
+  useEffect(() => {
+    if (user) {
+      redeemStoredRef().then((r) => {
+        if (r.ok) toast.success("🎉 Referral applied — 30 days of Pro added");
+      });
+    }
+  }, [user?.id]);
+  const { user } = useAuth();
   if (!user) return null;
   return <OnboardingModal />;
 }
