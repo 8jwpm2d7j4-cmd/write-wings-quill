@@ -10,6 +10,7 @@ import { SubscribeButton } from "@/components/SubscribeButton";
 import { createPortalSession } from "@/lib/portal.functions";
 import { getPaddleEnvironment } from "@/lib/paddle";
 import { toast } from "sonner";
+import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 
 export const Route = createFileRoute("/upgrade")({
   head: () => ({
@@ -36,6 +37,18 @@ function Upgrade() {
   const { isPro, subscription, loading } = useSubscription();
   const openPortal = useServerFn(createPortalSession);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [yearly, setYearly] = useState(false);
+  const { openCheckout, loading: coLoading } = usePaddleCheckout();
+
+  const subscribeYearly = async () => {
+    if (!user) return;
+    await openCheckout({
+      priceId: "quill_pro_yearly",
+      customerEmail: user.email,
+      customData: { userId: user.id },
+      successUrl: `${window.location.origin}/checkout/success`,
+    });
+  };
 
   const manage = async () => {
     setPortalLoading(true);
@@ -61,9 +74,13 @@ function Upgrade() {
         </div>
         <h1 className="mt-3 font-serif text-3xl">Quill Pro</h1>
         <p className="mt-1 text-sm text-muted-foreground">Everything you need to finish and share your book.</p>
-        <div className="mt-4 flex items-baseline justify-center gap-1">
-          <span className="font-serif text-5xl">$6</span>
-          <span className="text-muted-foreground">/month</span>
+        <div className="mt-4 inline-flex rounded-full border border-border p-1 text-xs">
+          <button onClick={() => setYearly(false)} className={`px-3 py-1 rounded-full ${!yearly ? "bg-primary text-primary-foreground" : ""}`}>Monthly</button>
+          <button onClick={() => setYearly(true)} className={`px-3 py-1 rounded-full ${yearly ? "bg-primary text-primary-foreground" : ""}`}>Yearly · save $12</button>
+        </div>
+        <div className="mt-3 flex items-baseline justify-center gap-1">
+          <span className="font-serif text-5xl">{yearly ? "$60" : "$6"}</span>
+          <span className="text-muted-foreground">/{yearly ? "year" : "month"}</span>
         </div>
 
         <ul className="mt-6 space-y-2.5 text-left">
@@ -93,6 +110,10 @@ function Upgrade() {
                 Manage subscription
               </Button>
             </div>
+          ) : yearly ? (
+            <Button onClick={subscribeYearly} disabled={coLoading || !user} className="w-full rounded-full">
+              <Crown className="mr-2 h-4 w-4" />{user ? "Upgrade — $60/yr" : "Sign in to upgrade"}
+            </Button>
           ) : (
             <SubscribeButton className="w-full rounded-full" label={user ? "Upgrade to Pro" : "Sign in to upgrade"} />
           )}
