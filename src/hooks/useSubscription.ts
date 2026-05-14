@@ -49,7 +49,7 @@ export function useSubscription() {
           .order("created_at", { ascending: false })
           .limit(1)
           .maybeSingle(),
-        supabase.from("profiles").select("bonus_pro_until").eq("id", user.id).maybeSingle(),
+        supabase.rpc("get_my_profile_settings").maybeSingle(),
       ]);
       if (!cancelled) {
         setSub((data as SubRow | null) ?? null);
