@@ -8,6 +8,8 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/co
 import { Trophy, Sparkles, Crown, Calendar } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useSubscription } from "@/hooks/useSubscription";
+import { SubscribeButton } from "@/components/SubscribeButton";
 
 export const Route = createFileRoute("/contests")({ component: () => <AppShell><Contests /></AppShell> });
 
@@ -20,19 +22,13 @@ function Contests() {
     queryFn: async () => (await supabase.from("contests").select("*").order("ends_at")).data ?? [],
   });
 
-  const { data: membership } = useQuery({
-    queryKey: ["membership", user?.id],
-    queryFn: async () => user ? (await supabase.from("memberships").select("*").eq("user_id", user.id).maybeSingle()).data : null,
-    enabled: !!user,
-  });
+  const { isPro, subscription } = useSubscription();
 
   const { data: myEntries = [] } = useQuery({
     queryKey: ["my-entries", user?.id],
     queryFn: async () => user ? (await supabase.from("contest_entries").select("*").eq("user_id", user.id)).data ?? [] : [],
     enabled: !!user,
   });
-
-  const isPro = membership?.active;
 
   return (
     <div className="px-5 pt-12">
@@ -42,17 +38,27 @@ function Contests() {
       </div>
       <p className="mt-1 text-sm text-muted-foreground">Monthly prizes for the best new writing.</p>
 
-      {!isPro && (
+      {!isPro ? (
         <section className="mt-6 paper-card p-5 bg-gradient-to-br from-primary/10 to-transparent">
           <div className="flex items-center gap-2"><Crown className="h-5 w-5 text-primary" /><h2 className="font-serif text-lg">Quill Pro</h2></div>
-          <p className="mt-1 text-sm text-muted-foreground">$6/mo · Enter members-only contests, unlimited AI assists, AI narration, and priority cover generation.</p>
-          <Button className="mt-4 w-full rounded-full" onClick={() => toast.info("Membership checkout coming next — confirm Paddle in chat to enable.")}>Upgrade to Pro</Button>
+          <p className="mt-1 text-sm text-muted-foreground">$6/mo · Enter members-only contests, unlimited AI assists, AI narration, beta-reader invites.</p>
+          <SubscribeButton className="mt-4 w-full rounded-full" />
+        </section>
+      ) : (
+        <section className="mt-6 paper-card p-4 flex items-center gap-3">
+          <Crown className="h-5 w-5 text-primary" />
+          <div className="flex-1">
+            <div className="font-serif">You're a Quill Pro member ✨</div>
+            {subscription?.cancel_at_period_end && subscription.current_period_end && (
+              <div className="text-xs text-muted-foreground">Access until {new Date(subscription.current_period_end).toLocaleDateString()}</div>
+            )}
+          </div>
         </section>
       )}
 
       <ul className="mt-6 space-y-4">
         {contests.map((c: any) => (
-          <ContestCard key={c.id} contest={c} isPro={!!isPro} myEntries={myEntries} onChange={() => qc.invalidateQueries({ queryKey: ["my-entries", user?.id] })} />
+          <ContestCard key={c.id} contest={c} isPro={isPro} myEntries={myEntries} onChange={() => qc.invalidateQueries({ queryKey: ["my-entries", user?.id] })} />
         ))}
         {contests.length === 0 && <p className="text-sm text-muted-foreground">No active contests right now — check back soon.</p>}
       </ul>

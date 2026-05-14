@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { userIsPro } from "@/lib/membership.server";
 
 const input = z.object({
   text: z.string().min(1).max(4500),
@@ -10,7 +11,10 @@ const input = z.object({
 export const narrate = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => input.parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    if (!(await userIsPro(context.userId))) {
+      throw new Error("AI narration is a Quill Pro feature. Upgrade to listen to chapters.");
+    }
     const key = process.env.ELEVENLABS_API_KEY;
     if (!key) throw new Error("Missing ELEVENLABS_API_KEY");
 

@@ -3,6 +3,17 @@ import { z } from "zod";
 import { createLovableAiGatewayProvider } from "./ai-gateway";
 import { generateText } from "ai";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { userIsPro } from "@/lib/membership.server";
+
+const FREE_DAILY_ASSISTS = 5;
+const dailyUsage = new Map<string, { date: string; count: number }>();
+function bumpUsage(userId: string): number {
+  const today = new Date().toISOString().slice(0, 10);
+  const cur = dailyUsage.get(userId);
+  if (!cur || cur.date !== today) { dailyUsage.set(userId, { date: today, count: 1 }); return 1; }
+  cur.count += 1;
+  return cur.count;
+}
 
 const assistInput = z.object({
   mode: z.enum(["continue", "rewrite", "improve", "brainstorm", "outline"]),
@@ -17,7 +28,13 @@ Never break the fourth wall. Output prose only — no preamble, no markdown head
 export const aiAssist = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => assistInput.parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    if (!(await userIsPro(context.userId))) {
+      const used = bumpUsage(context.userId);
+      if (used > FREE_DAILY_ASSISTS) {
+        throw new Error(`Free plan limit reached (${FREE_DAILY_ASSISTS} AI assists/day). Upgrade to Quill Pro for unlimited.`);
+      }
+    }
     const key = process.env.LOVABLE_API_KEY;
     if (!key) throw new Error("Missing LOVABLE_API_KEY");
     const model = createLovableAiGatewayProvider(key)("google/gemini-3-flash-preview");
