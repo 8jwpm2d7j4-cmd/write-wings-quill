@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UpgradeRouteImport } from './routes/upgrade'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as GoalsRouteImport } from './routes/goals'
@@ -23,6 +24,11 @@ import { Route as CoverIdRouteImport } from './routes/cover.$id'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
+const UpgradeRoute = UpgradeRouteImport.update({
+  id: '/upgrade',
+  path: '/upgrade',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
@@ -98,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/upgrade': typeof UpgradeRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/publish/$id': typeof PublishIdRoute
@@ -113,6 +120,7 @@ export interface FileRoutesByTo {
   '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/upgrade': typeof UpgradeRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/publish/$id': typeof PublishIdRoute
@@ -129,6 +137,7 @@ export interface FileRoutesById {
   '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/upgrade': typeof UpgradeRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/publish/$id': typeof PublishIdRoute
@@ -146,6 +155,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/new'
     | '/profile'
+    | '/upgrade'
     | '/checkout/success'
     | '/cover/$id'
     | '/publish/$id'
@@ -161,6 +171,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/new'
     | '/profile'
+    | '/upgrade'
     | '/checkout/success'
     | '/cover/$id'
     | '/publish/$id'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '/goals'
     | '/new'
     | '/profile'
+    | '/upgrade'
     | '/checkout/success'
     | '/cover/$id'
     | '/publish/$id'
@@ -192,6 +204,7 @@ export interface RootRouteChildren {
   GoalsRoute: typeof GoalsRoute
   NewRoute: typeof NewRoute
   ProfileRoute: typeof ProfileRoute
+  UpgradeRoute: typeof UpgradeRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   CoverIdRoute: typeof CoverIdRoute
   PublishIdRoute: typeof PublishIdRoute
@@ -202,6 +215,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/upgrade': {
+      id: '/upgrade'
+      path: '/upgrade'
+      fullPath: '/upgrade'
+      preLoaderRoute: typeof UpgradeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/profile': {
       id: '/profile'
       path: '/profile'
@@ -304,6 +324,7 @@ const rootRouteChildren: RootRouteChildren = {
   GoalsRoute: GoalsRoute,
   NewRoute: NewRoute,
   ProfileRoute: ProfileRoute,
+  UpgradeRoute: UpgradeRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   CoverIdRoute: CoverIdRoute,
   PublishIdRoute: PublishIdRoute,
@@ -314,3 +335,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
