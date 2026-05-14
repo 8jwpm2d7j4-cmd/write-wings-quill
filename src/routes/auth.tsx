@@ -58,7 +58,7 @@ function AuthPage() {
         <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-cover">
           <BookOpen className="h-7 w-7" />
         </div>
-        <h1 className="mt-6 font-serif text-4xl tracking-tight">Quill</h1>
+        <h1 className="mt-6 font-serif text-4xl tracking-tight">Quill — Write with AI and publish for free</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Write with AI. Publish for free. Be read.
         </p>
