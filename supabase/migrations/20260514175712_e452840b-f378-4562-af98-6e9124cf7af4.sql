@@ -1,0 +1,1 @@
+REVOKE SELECT (content) ON public.chapters FROM anon, authenticated, PUBLIC;
