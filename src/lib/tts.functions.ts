@@ -5,7 +5,7 @@ import { userIsPro } from "@/lib/membership.server";
 
 const input = z.object({
   text: z.string().min(1).max(4500),
-  voiceId: z.string().min(1).max(64).default("EXAVITQu4vr4xnSDxMaL"),
+  voiceId: z.string().min(1).max(64).regex(/^[a-zA-Z0-9]+$/).default("EXAVITQu4vr4xnSDxMaL"),
 });
 
 export const narrate = createServerFn({ method: "POST" })
