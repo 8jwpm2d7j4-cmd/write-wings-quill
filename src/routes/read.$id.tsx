@@ -13,7 +13,7 @@ import { TipJar } from "@/components/TipJar";
 import { Reactions } from "@/components/Reactions";
 import { FollowButton } from "@/components/FollowButton";
 import { PaidChapterGate } from "@/components/PaidChapterGate";
-import { touchReadingStreak } from "@/lib/streaks";
+import { pingReadingStreak } from "@/lib/streaks";
 
 export const Route = createFileRoute("/read/$id")({ component: Read });
 
