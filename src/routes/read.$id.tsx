@@ -118,3 +118,45 @@ function Read() {
     </div>
   );
 }
+
+function NarrateButton({ text }: { text: string }) {
+  const [state, setState] = useState<"idle" | "loading" | "playing" | "paused">("idle");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const callNarrate = useServerFn(narrate);
+
+  const start = async () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+      setState("playing");
+      return;
+    }
+    setState("loading");
+    try {
+      const r = await callNarrate({ data: { text: text.slice(0, 4500) } });
+      const audio = new Audio(`data:audio/mpeg;base64,${r.audio}`);
+      audio.onended = () => setState("idle");
+      audio.onpause = () => setState((s) => (s === "playing" ? "paused" : s));
+      audioRef.current = audio;
+      await audio.play();
+      setState("playing");
+    } catch (e) {
+      setState("idle");
+      toast.error(e instanceof Error ? e.message : "Narration failed");
+    }
+  };
+
+  const pause = () => { audioRef.current?.pause(); setState("paused"); };
+
+  return (
+    <button
+      onClick={state === "playing" ? pause : start}
+      className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent text-primary"
+      title="Listen"
+      disabled={state === "loading"}
+    >
+      {state === "loading" ? <Volume2 className="h-4 w-4 animate-pulse" />
+        : state === "playing" ? <Pause className="h-4 w-4" />
+        : <Play className="h-4 w-4" />}
+    </button>
+  );
+}
