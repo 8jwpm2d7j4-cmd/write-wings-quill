@@ -84,6 +84,7 @@ function Profile() {
       <div className="mt-3 grid grid-cols-2 gap-3">
         <NavCard to="/manage" icon={Library} title="Manage books" />
         <NavCard to="/analytics" icon={BarChart3} title="Analytics" />
+        <NavCard to="/marketing" icon={Megaphone} title="Share Quill" />
         <NavCard to="/contests" icon={Trophy} title="Contests" />
         <NavCard to="/feed" icon={Rss} title="Feed" />
       </div>
