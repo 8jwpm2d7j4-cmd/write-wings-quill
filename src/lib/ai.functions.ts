@@ -22,8 +22,9 @@ export const aiAssist = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => assistInput.parse(d))
   .handler(async ({ data, context }) => {
     if (!(await userIsPro(context.userId))) {
-      const used = bumpUsage(context.userId);
-      if (used > FREE_DAILY_ASSISTS) {
+      const { data: used, error: usageErr } = await context.supabase.rpc("bump_ai_usage");
+      if (usageErr) throw new Error("Could not record AI usage");
+      if ((used ?? 0) > FREE_DAILY_ASSISTS) {
         throw new Error(`Free plan limit reached (${FREE_DAILY_ASSISTS} AI assists/day). Upgrade to Quill Pro for unlimited.`);
       }
     }
