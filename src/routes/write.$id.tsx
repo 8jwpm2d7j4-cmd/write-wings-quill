@@ -85,6 +85,53 @@ function WritePage() {
     if (data) setActiveChapterId(data.id);
   };
 
+  const importFiles = async (files: FileList) => {
+    const arr = Array.from(files);
+    if (!arr.length) return;
+    const { default: mammoth } = await import("mammoth");
+    let order = chapters.length;
+    let firstId: string | null = null;
+    let imported = 0;
+    for (const file of arr) {
+      try {
+        const name = file.name.replace(/\.(docx?|txt|md)$/i, "").trim() || `Chapter ${order + 1}`;
+        let text = "";
+        if (/\.docx$/i.test(file.name)) {
+          const buf = await file.arrayBuffer();
+          const r = await mammoth.extractRawText({ arrayBuffer: buf });
+          text = r.value;
+        } else if (/\.(txt|md)$/i.test(file.name)) {
+          text = await file.text();
+        } else if (/\.doc$/i.test(file.name)) {
+          toast.error(`${file.name}: legacy .doc not supported — save as .docx and try again`);
+          continue;
+        } else {
+          toast.error(`${file.name}: unsupported file type`);
+          continue;
+        }
+        const content = text.replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+        const wc = countWords(content);
+        const { data } = await supabase.from("chapters").insert({
+          manuscript_id: id, title: name, order, content, word_count: wc,
+        }).select().single();
+        if (data && !firstId) firstId = data.id;
+        order += 1;
+        imported += 1;
+      } catch (e) {
+        toast.error(`${file.name}: ${e instanceof Error ? e.message : "import failed"}`);
+      }
+    }
+    if (imported) {
+      const { data: ch } = await supabase.from("chapters").select("word_count").eq("manuscript_id", id);
+      const total = (ch ?? []).reduce((s, c) => s + (c.word_count ?? 0), 0);
+      await supabase.from("manuscripts").update({ word_count: total }).eq("id", id);
+      qc.invalidateQueries({ queryKey: ["chapters", id] });
+      qc.invalidateQueries({ queryKey: ["m", id] });
+      if (firstId) setActiveChapterId(firstId);
+      toast.success(`Imported ${imported} chapter${imported > 1 ? "s" : ""}`);
+    }
+  };
+
   const togglePublish = async () => {
     if (!manuscript) return;
     const next = manuscript.status === "published" ? "draft" : "published";
