@@ -20,6 +20,8 @@ import { Route as WriteIdRouteImport } from './routes/write.$id'
 import { Route as ReadIdRouteImport } from './routes/read.$id'
 import { Route as PublishIdRouteImport } from './routes/publish.$id'
 import { Route as CoverIdRouteImport } from './routes/cover.$id'
+import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
@@ -76,6 +78,17 @@ const CoverIdRoute = CoverIdRouteImport.update({
   path: '/cover/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
+  id: '/checkout/success',
+  path: '/checkout/success',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -85,10 +98,12 @@ export interface FileRoutesByFullPath {
   '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
   '/write/$id': typeof WriteIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -98,10 +113,12 @@ export interface FileRoutesByTo {
   '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
   '/write/$id': typeof WriteIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -112,10 +129,12 @@ export interface FileRoutesById {
   '/goals': typeof GoalsRoute
   '/new': typeof NewRoute
   '/profile': typeof ProfileRoute
+  '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
   '/write/$id': typeof WriteIdRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -127,10 +146,12 @@ export interface FileRouteTypes {
     | '/goals'
     | '/new'
     | '/profile'
+    | '/checkout/success'
     | '/cover/$id'
     | '/publish/$id'
     | '/read/$id'
     | '/write/$id'
+    | '/api/public/payments/webhook'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,10 +161,12 @@ export interface FileRouteTypes {
     | '/goals'
     | '/new'
     | '/profile'
+    | '/checkout/success'
     | '/cover/$id'
     | '/publish/$id'
     | '/read/$id'
     | '/write/$id'
+    | '/api/public/payments/webhook'
   id:
     | '__root__'
     | '/'
@@ -153,10 +176,12 @@ export interface FileRouteTypes {
     | '/goals'
     | '/new'
     | '/profile'
+    | '/checkout/success'
     | '/cover/$id'
     | '/publish/$id'
     | '/read/$id'
     | '/write/$id'
+    | '/api/public/payments/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -167,10 +192,12 @@ export interface RootRouteChildren {
   GoalsRoute: typeof GoalsRoute
   NewRoute: typeof NewRoute
   ProfileRoute: typeof ProfileRoute
+  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   CoverIdRoute: typeof CoverIdRoute
   PublishIdRoute: typeof PublishIdRoute
   ReadIdRoute: typeof ReadIdRoute
   WriteIdRoute: typeof WriteIdRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,6 +279,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoverIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/success': {
+      id: '/checkout/success'
+      path: '/checkout/success'
+      fullPath: '/checkout/success'
+      preLoaderRoute: typeof CheckoutSuccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -263,11 +304,23 @@ const rootRouteChildren: RootRouteChildren = {
   GoalsRoute: GoalsRoute,
   NewRoute: NewRoute,
   ProfileRoute: ProfileRoute,
+  CheckoutSuccessRoute: CheckoutSuccessRoute,
   CoverIdRoute: CoverIdRoute,
   PublishIdRoute: PublishIdRoute,
   ReadIdRoute: ReadIdRoute,
   WriteIdRoute: WriteIdRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
