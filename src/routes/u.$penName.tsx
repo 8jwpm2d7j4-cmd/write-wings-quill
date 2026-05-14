@@ -58,9 +58,9 @@ function Author() {
 
       <div className="mt-4 flex items-start gap-3">
         {profile.avatar_url ? (
-          <img src={profile.avatar_url} alt="" className="h-16 w-16 rounded-full object-cover" />
+          <img src={profile.avatar_url} alt={`${profile.pen_name}'s avatar`} className="h-16 w-16 rounded-full object-cover" />
         ) : (
-          <div className="h-16 w-16 rounded-full bg-accent grid place-items-center font-serif text-xl">{profile.pen_name[0]}</div>
+          <div aria-hidden="true" className="h-16 w-16 rounded-full bg-accent grid place-items-center font-serif text-xl">{profile.pen_name[0]}</div>
         )}
         <div className="flex-1 min-w-0">
           <h1 className="font-serif text-2xl truncate">{profile.pen_name}</h1>
@@ -89,6 +89,23 @@ function Author() {
 
       <h2 className="mt-8 font-serif text-xl">Achievements</h2>
       <div className="mt-3"><AchievementWall userId={profile.id} /></div>
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            mainEntity: {
+              "@type": "Person",
+              name: profile.pen_name,
+              description: profile.bio || undefined,
+              image: profile.avatar_url || undefined,
+              url: `https://write-wings-quill.lovable.app/u/${encodeURIComponent(profile.pen_name)}`,
+            },
+          }).replace(/</g, "\\u003c"),
+        }}
+      />
     </div>
   );
 }

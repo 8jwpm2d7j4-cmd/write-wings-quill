@@ -9,7 +9,33 @@ import { readingLabel } from "@/lib/reading";
 
 const GENRES = ["All", "Fiction", "Romance", "Sci-Fi", "Fantasy", "Mystery", "Thriller", "Memoir", "Poetry", "Non-fiction"];
 
-export const Route = createFileRoute("/discover")({ component: () => <AppShell><Discover /></AppShell> });
+export const Route = createFileRoute("/discover")({
+  component: () => <AppShell><Discover /></AppShell>,
+  head: () => ({
+    meta: [
+      { title: "Discover stories from indie writers — Quill" },
+      { name: "description", content: "Browse new books and chapters from indie writers around the world. Filter by genre and find your next favorite story on Quill." },
+      { property: "og:title", content: "Discover stories on Quill" },
+      { property: "og:description", content: "New books and chapters from indie writers around the world." },
+      { property: "og:url", content: "https://write-wings-quill.lovable.app/discover" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://write-wings-quill.lovable.app/discover" },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: "Discover stories on Quill",
+          description: "Browse new books and chapters from indie writers around the world.",
+          url: "https://write-wings-quill.lovable.app/discover",
+        }),
+      },
+    ],
+  }),
+});
 
 function Discover() {
   const [q, setQ] = useState("");
@@ -49,9 +75,10 @@ function Discover() {
       <h1 className="font-serif text-3xl">Discover</h1>
       <p className="mt-1 text-sm text-muted-foreground">Stories shared by writers around the world.</p>
 
+      <label htmlFor="discover-search" className="sr-only">Search stories</label>
       <div className="relative mt-5">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title, genre, author…" className="pl-9 h-11 rounded-full" />
+        <Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input id="discover-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title, genre, author…" className="pl-9 h-11 rounded-full" />
       </div>
 
       <div className="mt-4 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1">
@@ -83,7 +110,8 @@ function Discover() {
         </section>
       )}
 
-      <div className="mt-7 space-y-5">
+      <h2 className="mt-7 font-serif text-lg">All stories</h2>
+      <div className="mt-3 space-y-5">
         {isLoading && [0, 1, 2].map((i) => <div key={i} className="h-32 paper-card animate-pulse" />)}
         {!isLoading && filtered.length === 0 && (
           <div className="paper-card p-8 text-center text-sm text-muted-foreground">No stories match your filter.</div>

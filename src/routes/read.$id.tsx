@@ -100,7 +100,7 @@ function Read() {
   return (
     <div className="mx-auto max-w-md min-h-screen pb-32">
       <header className="sticky top-0 z-10 flex items-center gap-1 bg-paper/90 backdrop-blur border-b border-border px-3 py-2.5">
-        <Link to="/discover" className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
+        <Link to="/discover" aria-label="Back to Discover" className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div className="flex-1 truncate font-serif text-sm">{m.title}</div>
@@ -108,7 +108,7 @@ function Read() {
         <EmbedSnippet manuscriptId={m.id} title={m.title} />
         <ShareClipButton title={m.title} author={(m as any).profiles?.pen_name ?? "Anonymous"} excerpt={(chapters[0] as any)?.content ?? m.synopsis ?? m.title} />
         <ShareButton title={m.title} text={m.synopsis ?? `Read "${m.title}" on Quill`} />
-        <button onClick={toggleLike} className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
+        <button onClick={toggleLike} aria-label={liked ? "Unlike this story" : "Like this story"} aria-pressed={liked} className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
           <Heart className={liked ? "h-5 w-5 fill-primary text-primary" : "h-5 w-5"} />
         </button>
       </header>
@@ -203,6 +203,7 @@ function NarrateButton({ text }: { text: string }) {
   return (
     <button
       onClick={state === "playing" ? pause : start}
+      aria-label={state === "playing" ? "Pause narration" : "Listen to this chapter"}
       className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent text-primary"
       title="Listen"
       disabled={state === "loading"}

@@ -10,3 +10,7 @@ Disallow: /cover/
 Disallow: /checkout/
 Disallow: /auth
 Disallow: /profile
+Disallow: /bookmarks
+Disallow: /invite
+
+Sitemap: https://write-wings-quill.lovable.app/sitemap.xml

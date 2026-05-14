@@ -75,9 +75,10 @@ function Invite() {
   return (
     <div className="mx-auto max-w-md min-h-screen pb-32">
       <header className="sticky top-0 z-10 flex items-center gap-2 bg-paper/90 backdrop-blur border-b border-border px-3 py-2.5">
-        <Link to="/profile" className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent"><ArrowLeft className="h-5 w-5" /></Link>
+        <Link to="/profile" aria-label="Back to profile" className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent"><ArrowLeft className="h-5 w-5" /></Link>
         <div className="font-serif text-sm">Invite & Earn</div>
       </header>
+      <h1 className="sr-only">Invite friends and earn Pro months</h1>
 
       <div className="px-5 pt-6 space-y-5">
         <div className="paper-card p-5 text-center">
@@ -92,7 +93,7 @@ function Invite() {
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Your link</div>
           <div className="mt-2 flex gap-2">
             <Input value={link} readOnly className="font-mono text-xs" />
-            <Button onClick={copy} size="icon" variant="outline" className="rounded-full"><Copy className="h-4 w-4" /></Button>
+            <Button onClick={copy} aria-label="Copy invite link" size="icon" variant="outline" className="rounded-full"><Copy className="h-4 w-4" /></Button>
           </div>
           <Button onClick={share} className="mt-3 w-full rounded-full">Share invite</Button>
           <div className="mt-4 grid grid-cols-2 gap-3 text-center">

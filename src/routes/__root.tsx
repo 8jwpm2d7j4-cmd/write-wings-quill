@@ -71,7 +71,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:site_name", content: "Quill" },
       { property: "og:title", content: "Quill — Write, publish, share your stories" },
       { property: "og:description", content: "Draft with AI. Design covers. Publish to Kindle. Earn from your readers." },
-      { property: "og:image", content: "/og-image.jpg" },
+      { property: "og:image", content: "https://write-wings-quill.lovable.app/og-image.jpg" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "1200" },
       { property: "og:locale", content: "en_US" },
@@ -79,14 +79,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Quill — Write the book in you" },
       { name: "twitter:description", content: "AI co-writer, AI covers, EPUB export, Kindle-ready. Self-publish in days." },
-      { name: "twitter:image", content: "/og-image.jpg" },
+      { name: "twitter:image", content: "https://write-wings-quill.lovable.app/og-image.jpg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "manifest", href: "/manifest.json" },
       { rel: "icon", type: "image/png", href: "/app-icon.png" },
       { rel: "apple-touch-icon", href: "/app-icon.png" },
-      { rel: "canonical", href: "https://quill.lovable.app/" },
+      
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
