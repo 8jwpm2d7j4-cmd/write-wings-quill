@@ -22,7 +22,14 @@ function AuthPage() {
   const [penName, setPenName] = useState("");
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => { if (user) navigate({ to: "/" }); }, [user, navigate]);
+  useEffect(() => {
+    if (user) {
+      redeemStoredRef().then((r) => {
+        if (r.ok) toast.success("🎉 Referral applied — 30 days of Pro added");
+      });
+      navigate({ to: "/" });
+    }
+  }, [user, navigate]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
