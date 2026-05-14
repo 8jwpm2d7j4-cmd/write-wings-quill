@@ -15,6 +15,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as MarketingRouteImport } from './routes/marketing'
 import { Route as ManageRouteImport } from './routes/manage'
+import { Route as InviteRouteImport } from './routes/invite'
 import { Route as GoalsRouteImport } from './routes/goals'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as DiscoverRouteImport } from './routes/discover'
@@ -27,6 +28,7 @@ import { Route as WriteIdRouteImport } from './routes/write.$id'
 import { Route as UPenNameRouteImport } from './routes/u.$penName'
 import { Route as ReadIdRouteImport } from './routes/read.$id'
 import { Route as PublishIdRouteImport } from './routes/publish.$id'
+import { Route as EmbedIdRouteImport } from './routes/embed.$id'
 import { Route as CoverIdRouteImport } from './routes/cover.$id'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as BookSlugRouteImport } from './routes/book.$slug'
@@ -60,6 +62,11 @@ const MarketingRoute = MarketingRouteImport.update({
 const ManageRoute = ManageRouteImport.update({
   id: '/manage',
   path: '/manage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteRoute = InviteRouteImport.update({
+  id: '/invite',
+  path: '/invite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GoalsRoute = GoalsRouteImport.update({
@@ -122,6 +129,11 @@ const PublishIdRoute = PublishIdRouteImport.update({
   path: '/publish/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmbedIdRoute = EmbedIdRouteImport.update({
+  id: '/embed/$id',
+  path: '/embed/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoverIdRoute = CoverIdRouteImport.update({
   id: '/cover/$id',
   path: '/cover/$id',
@@ -153,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
+  '/invite': typeof InviteRoute
   '/manage': typeof ManageRoute
   '/marketing': typeof MarketingRoute
   '/new': typeof NewRoute
@@ -162,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
+  '/embed/$id': typeof EmbedIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
   '/u/$penName': typeof UPenNameRoute
@@ -177,6 +191,7 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
+  '/invite': typeof InviteRoute
   '/manage': typeof ManageRoute
   '/marketing': typeof MarketingRoute
   '/new': typeof NewRoute
@@ -186,6 +201,7 @@ export interface FileRoutesByTo {
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
+  '/embed/$id': typeof EmbedIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
   '/u/$penName': typeof UPenNameRoute
@@ -202,6 +218,7 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
+  '/invite': typeof InviteRoute
   '/manage': typeof ManageRoute
   '/marketing': typeof MarketingRoute
   '/new': typeof NewRoute
@@ -211,6 +228,7 @@ export interface FileRoutesById {
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
+  '/embed/$id': typeof EmbedIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
   '/u/$penName': typeof UPenNameRoute
@@ -228,6 +246,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/feed'
     | '/goals'
+    | '/invite'
     | '/manage'
     | '/marketing'
     | '/new'
@@ -237,6 +256,7 @@ export interface FileRouteTypes {
     | '/book/$slug'
     | '/checkout/success'
     | '/cover/$id'
+    | '/embed/$id'
     | '/publish/$id'
     | '/read/$id'
     | '/u/$penName'
@@ -252,6 +272,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/feed'
     | '/goals'
+    | '/invite'
     | '/manage'
     | '/marketing'
     | '/new'
@@ -261,6 +282,7 @@ export interface FileRouteTypes {
     | '/book/$slug'
     | '/checkout/success'
     | '/cover/$id'
+    | '/embed/$id'
     | '/publish/$id'
     | '/read/$id'
     | '/u/$penName'
@@ -276,6 +298,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/feed'
     | '/goals'
+    | '/invite'
     | '/manage'
     | '/marketing'
     | '/new'
@@ -285,6 +308,7 @@ export interface FileRouteTypes {
     | '/book/$slug'
     | '/checkout/success'
     | '/cover/$id'
+    | '/embed/$id'
     | '/publish/$id'
     | '/read/$id'
     | '/u/$penName'
@@ -301,6 +325,7 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   FeedRoute: typeof FeedRoute
   GoalsRoute: typeof GoalsRoute
+  InviteRoute: typeof InviteRoute
   ManageRoute: typeof ManageRoute
   MarketingRoute: typeof MarketingRoute
   NewRoute: typeof NewRoute
@@ -310,6 +335,7 @@ export interface RootRouteChildren {
   BookSlugRoute: typeof BookSlugRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   CoverIdRoute: typeof CoverIdRoute
+  EmbedIdRoute: typeof EmbedIdRoute
   PublishIdRoute: typeof PublishIdRoute
   ReadIdRoute: typeof ReadIdRoute
   UPenNameRoute: typeof UPenNameRoute
@@ -359,6 +385,13 @@ declare module '@tanstack/react-router' {
       path: '/manage'
       fullPath: '/manage'
       preLoaderRoute: typeof ManageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite': {
+      id: '/invite'
+      path: '/invite'
+      fullPath: '/invite'
+      preLoaderRoute: typeof InviteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/goals': {
@@ -445,6 +478,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublishIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/embed/$id': {
+      id: '/embed/$id'
+      path: '/embed/$id'
+      fullPath: '/embed/$id'
+      preLoaderRoute: typeof EmbedIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cover/$id': {
       id: '/cover/$id'
       path: '/cover/$id'
@@ -485,6 +525,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   FeedRoute: FeedRoute,
   GoalsRoute: GoalsRoute,
+  InviteRoute: InviteRoute,
   ManageRoute: ManageRoute,
   MarketingRoute: MarketingRoute,
   NewRoute: NewRoute,
@@ -494,6 +535,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookSlugRoute: BookSlugRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   CoverIdRoute: CoverIdRoute,
+  EmbedIdRoute: EmbedIdRoute,
   PublishIdRoute: PublishIdRoute,
   ReadIdRoute: ReadIdRoute,
   UPenNameRoute: UPenNameRoute,

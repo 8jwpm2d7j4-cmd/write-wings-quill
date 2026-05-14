@@ -20,6 +20,8 @@ import { ReportButton } from "@/components/ReportButton";
 import { CommentItem } from "@/components/CommentItem";
 import { readingLabel } from "@/lib/reading";
 import { notify } from "@/lib/notify";
+import { ShareClipButton } from "@/components/ShareClipButton";
+import { EmbedSnippet } from "@/components/EmbedSnippet";
 
 export const Route = createFileRoute("/read/$id")({ component: Read });
 
@@ -103,6 +105,8 @@ function Read() {
         </Link>
         <div className="flex-1 truncate font-serif text-sm">{m.title}</div>
         <BookmarkButton manuscriptId={m.id} />
+        <EmbedSnippet manuscriptId={m.id} title={m.title} />
+        <ShareClipButton title={m.title} author={(m as any).profiles?.pen_name ?? "Anonymous"} excerpt={(chapters[0] as any)?.content ?? m.synopsis ?? m.title} />
         <ShareButton title={m.title} text={m.synopsis ?? `Read "${m.title}" on Quill`} />
         <button onClick={toggleLike} className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
           <Heart className={liked ? "h-5 w-5 fill-primary text-primary" : "h-5 w-5"} />

@@ -12,6 +12,9 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 import { Toaster } from "@/components/ui/sonner";
 import { OnboardingModal } from "@/components/OnboardingModal";
 import { ThemeProvider } from "@/lib/theme";
+import { useEffect } from "react";
+import { redeemStoredRef } from "@/lib/referral";
+import { toast } from "sonner";
 
 function NotFoundComponent() {
   return (
@@ -124,6 +127,13 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  if (typeof window !== "undefined") {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      const code = p.get("ref");
+      if (code) localStorage.setItem("quill.refcode", code.toLowerCase());
+    } catch {}
+  }
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
@@ -139,6 +149,13 @@ function RootComponent() {
 
 function OnboardingGate() {
   const { user } = useAuth();
+  useEffect(() => {
+    if (user) {
+      redeemStoredRef().then((r) => {
+        if (r.ok) toast.success("🎉 Referral applied — 30 days of Pro added");
+      });
+    }
+  }, [user?.id]);
   if (!user) return null;
   return <OnboardingModal />;
 }

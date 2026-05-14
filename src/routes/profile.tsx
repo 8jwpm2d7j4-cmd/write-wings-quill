@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { LogOut, Trophy, BarChart3, Rss, Crown, ChevronRight, Sparkles, Library, Megaphone } from "lucide-react";
+import { LogOut, Trophy, BarChart3, Rss, Crown, ChevronRight, Sparkles, Library, Megaphone, Gift } from "lucide-react";
 import { toast } from "sonner";
 import { useSubscription } from "@/hooks/useSubscription";
 import { AchievementWall } from "@/components/AchievementWall";
@@ -85,6 +85,7 @@ function Profile() {
         <NavCard to="/manage" icon={Library} title="Manage books" />
         <NavCard to="/analytics" icon={BarChart3} title="Analytics" />
         <NavCard to="/marketing" icon={Megaphone} title="Share Quill" />
+        <NavCard to="/invite" icon={Gift} title="Invite & Earn" />
         <NavCard to="/contests" icon={Trophy} title="Contests" />
         <NavCard to="/feed" icon={Rss} title="Feed" />
       </div>

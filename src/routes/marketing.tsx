@@ -9,6 +9,7 @@ import heroImg from "@/assets/marketing-hero.jpg";
 import post1 from "@/assets/social-post-1.jpg";
 import post2 from "@/assets/social-post-2.jpg";
 import promoVideo from "@/assets/promo-video.mp4.asset.json";
+import { SignupCounter } from "@/components/SignupCounter";
 
 export const Route = createFileRoute("/marketing")({
   component: () => <AppShell><Marketing /></AppShell>,
@@ -53,6 +54,7 @@ function Marketing() {
       </Link>
       <h1 className="mt-2 font-serif text-3xl">Share Quill</h1>
       <p className="mt-1 text-sm text-muted-foreground">Posters, captions, and a 5-second promo video — ready to post.</p>
+      <div className="mt-3"><SignupCounter /></div>
 
       {/* Promo video */}
       <section className="mt-6">

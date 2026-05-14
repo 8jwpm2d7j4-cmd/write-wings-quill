@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { BookOpen, Sparkles } from "lucide-react";
+import { redeemStoredRef } from "@/lib/referral";
+import { SignupCounter } from "@/components/SignupCounter";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
@@ -20,7 +22,14 @@ function AuthPage() {
   const [penName, setPenName] = useState("");
   const [busy, setBusy] = useState(false);
 
-  useEffect(() => { if (user) navigate({ to: "/" }); }, [user, navigate]);
+  useEffect(() => {
+    if (user) {
+      redeemStoredRef().then((r) => {
+        if (r.ok) toast.success("🎉 Referral applied — 30 days of Pro added");
+      });
+      navigate({ to: "/" });
+    }
+  }, [user, navigate]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +62,7 @@ function AuthPage() {
         <p className="mt-2 text-sm text-muted-foreground">
           Write with AI. Publish for free. Be read.
         </p>
+        <div className="mt-4 flex justify-center"><SignupCounter /></div>
       </div>
 
       <Button
