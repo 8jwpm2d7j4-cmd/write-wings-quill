@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useServerFn } from "@tanstack/react-start";
@@ -9,6 +9,11 @@ import { ArrowLeft, Heart, MessageCircle, Pause, Play, Send, Volume2 } from "luc
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { TipJar } from "@/components/TipJar";
+import { Reactions } from "@/components/Reactions";
+import { FollowButton } from "@/components/FollowButton";
+import { PaidChapterGate } from "@/components/PaidChapterGate";
+import { touchReadingStreak } from "@/lib/streaks";
 
 export const Route = createFileRoute("/read/$id")({ component: Read });
 
