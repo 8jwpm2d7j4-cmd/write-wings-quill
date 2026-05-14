@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "manifest", href: "/manifest.json" },
       { rel: "icon", type: "image/png", href: "/app-icon.png" },
       { rel: "apple-touch-icon", href: "/app-icon.png" },
-      { rel: "canonical", href: "https://quill.lovable.app/" },
+      
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
