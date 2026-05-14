@@ -213,3 +213,29 @@ function NarrateButton({ text }: { text: string }) {
     </button>
   );
 }
+
+function ChapterContent({ chapterId, title }: { chapterId: string; title: string }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ["chapter-content", chapterId],
+    queryFn: async () => (await supabase.rpc("get_chapter_content", { _chapter_id: chapterId })).data ?? "",
+  });
+  const content = (data ?? "") as string;
+  return (
+    <>
+      <div className="flex items-center justify-between border-b border-border pb-2 mb-4">
+        <h2 className="font-serif text-2xl">{title}</h2>
+        {content && <NarrateButton text={`${title}. ${content}`} />}
+      </div>
+      {isLoading ? (
+        <p className="text-sm text-muted-foreground">Loading…</p>
+      ) : content ? (
+        <>
+          {content.split(/\n\n+/).map((p, i) => <p key={i} className="mb-4">{p}</p>)}
+          <Reactions chapterId={chapterId} />
+        </>
+      ) : (
+        <p className="text-sm text-muted-foreground">Content unavailable.</p>
+      )}
+    </>
+  );
+}
