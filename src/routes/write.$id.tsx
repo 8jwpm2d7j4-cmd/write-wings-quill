@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { aiAssist } from "@/lib/ai.functions";
-import { ArrowLeft, BookCopy, Image as ImageIcon, Mic, MicOff, MoreHorizontal, Plus, Send, Settings2, Sparkles, Globe, Lock } from "lucide-react";
+import { ArrowLeft, BookCopy, Image as ImageIcon, Mic, MicOff, MoreHorizontal, Plus, Send, Settings2, Sparkles, Globe, Lock, Upload, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
@@ -85,6 +85,53 @@ function WritePage() {
     if (data) setActiveChapterId(data.id);
   };
 
+  const importFiles = async (files: FileList) => {
+    const arr = Array.from(files);
+    if (!arr.length) return;
+    const { default: mammoth } = await import("mammoth");
+    let order = chapters.length;
+    let firstId: string | null = null;
+    let imported = 0;
+    for (const file of arr) {
+      try {
+        const name = file.name.replace(/\.(docx?|txt|md)$/i, "").trim() || `Chapter ${order + 1}`;
+        let text = "";
+        if (/\.docx$/i.test(file.name)) {
+          const buf = await file.arrayBuffer();
+          const r = await mammoth.extractRawText({ arrayBuffer: buf });
+          text = r.value;
+        } else if (/\.(txt|md)$/i.test(file.name)) {
+          text = await file.text();
+        } else if (/\.doc$/i.test(file.name)) {
+          toast.error(`${file.name}: legacy .doc not supported — save as .docx and try again`);
+          continue;
+        } else {
+          toast.error(`${file.name}: unsupported file type`);
+          continue;
+        }
+        const content = text.replace(/\r\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+        const wc = countWords(content);
+        const { data } = await supabase.from("chapters").insert({
+          manuscript_id: id, title: name, order, content, word_count: wc,
+        }).select().single();
+        if (data && !firstId) firstId = data.id;
+        order += 1;
+        imported += 1;
+      } catch (e) {
+        toast.error(`${file.name}: ${e instanceof Error ? e.message : "import failed"}`);
+      }
+    }
+    if (imported) {
+      const { data: ch } = await supabase.from("chapters").select("word_count").eq("manuscript_id", id);
+      const total = (ch ?? []).reduce((s, c) => s + (c.word_count ?? 0), 0);
+      await supabase.from("manuscripts").update({ word_count: total }).eq("id", id);
+      qc.invalidateQueries({ queryKey: ["chapters", id] });
+      qc.invalidateQueries({ queryKey: ["m", id] });
+      if (firstId) setActiveChapterId(firstId);
+      toast.success(`Imported ${imported} chapter${imported > 1 ? "s" : ""}`);
+    }
+  };
+
   const togglePublish = async () => {
     if (!manuscript) return;
     const next = manuscript.status === "published" ? "draft" : "published";
@@ -110,7 +157,7 @@ function WritePage() {
         <SettingsSheet manuscript={manuscript} onPublish={togglePublish} />
       </header>
 
-      <ChapterStrip chapters={chapters} activeId={activeChapterId} onSelect={setActiveChapterId} onAdd={addChapter} />
+      <ChapterStrip chapters={chapters} activeId={activeChapterId} onSelect={setActiveChapterId} onAdd={addChapter} onImport={importFiles} />
 
       <div className="flex-1 px-5 py-4">
         <input
@@ -166,10 +213,21 @@ function DictateButton({ onTranscript }: { onTranscript: (t: string) => void }) 
   );
 }
 
-function ChapterStrip({ chapters, activeId, onSelect, onAdd }: {
+function ChapterStrip({ chapters, activeId, onSelect, onAdd, onImport }: {
   chapters: { id: string; title: string }[]; activeId: string | null;
   onSelect: (id: string) => void; onAdd: () => void;
+  onImport: (files: FileList) => Promise<void>;
 }) {
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [importing, setImporting] = useState(false);
+  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    setImporting(true);
+    try { await onImport(e.target.files); } finally {
+      setImporting(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
   return (
     <div className="flex gap-2 overflow-x-auto px-3 py-2 border-b border-border bg-card/50">
       {chapters.map((c, i) => (
@@ -184,9 +242,25 @@ function ChapterStrip({ chapters, activeId, onSelect, onAdd }: {
           {i + 1}. {c.title}
         </button>
       ))}
-      <button onClick={onAdd} className="shrink-0 grid place-items-center h-7 w-7 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground">
+      <button onClick={onAdd} className="shrink-0 grid place-items-center h-7 w-7 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground" title="New chapter">
         <Plus className="h-4 w-4" />
       </button>
+      <button
+        onClick={() => fileRef.current?.click()}
+        disabled={importing}
+        className="shrink-0 grid place-items-center h-7 w-7 rounded-full border border-dashed border-border text-muted-foreground hover:text-foreground disabled:opacity-50"
+        title="Import .docx, .txt, or .md"
+      >
+        {importing ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+      </button>
+      <input
+        ref={fileRef}
+        type="file"
+        accept=".docx,.txt,.md,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,text/markdown"
+        multiple
+        className="hidden"
+        onChange={handleFiles}
+      />
     </div>
   );
 }
