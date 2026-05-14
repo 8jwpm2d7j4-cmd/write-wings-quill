@@ -8,9 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { LogOut, Trophy, Mic, Headphones, Crown, ChevronRight } from "lucide-react";
+import { LogOut, Trophy, BarChart3, Rss, Crown, ChevronRight, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useSubscription } from "@/hooks/useSubscription";
+import { AchievementWall } from "@/components/AchievementWall";
 
 export const Route = createFileRoute("/profile")({ component: () => <AppShell><Profile /></AppShell> });
 
