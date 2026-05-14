@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { ArrowLeft, Heart, MessageCircle, Send } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { narrate } from "@/lib/tts.functions";
+import { ArrowLeft, Heart, MessageCircle, Pause, Play, Send, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -83,7 +85,10 @@ function Read() {
         <article className="mt-10 space-y-10 font-serif text-[17px] leading-relaxed">
           {chapters.map((c: any) => (
             <section key={c.id}>
-              <h2 className="font-serif text-2xl border-b border-border pb-2 mb-4">{c.title}</h2>
+              <div className="flex items-center justify-between border-b border-border pb-2 mb-4">
+                <h2 className="font-serif text-2xl">{c.title}</h2>
+                <NarrateButton text={`${c.title}. ${c.content}`} />
+              </div>
               {c.content.split(/\n\n+/).map((p: string, i: number) => <p key={i} className="mb-4">{p}</p>)}
             </section>
           ))}
