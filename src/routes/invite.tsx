@@ -93,7 +93,7 @@ function Invite() {
           <div className="text-xs uppercase tracking-widest text-muted-foreground">Your link</div>
           <div className="mt-2 flex gap-2">
             <Input value={link} readOnly className="font-mono text-xs" />
-            <Button onClick={copy} size="icon" variant="outline" className="rounded-full"><Copy className="h-4 w-4" /></Button>
+            <Button onClick={copy} aria-label="Copy invite link" size="icon" variant="outline" className="rounded-full"><Copy className="h-4 w-4" /></Button>
           </div>
           <Button onClick={share} className="mt-3 w-full rounded-full">Share invite</Button>
           <div className="mt-4 grid grid-cols-2 gap-3 text-center">
