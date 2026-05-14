@@ -28,6 +28,7 @@ import { Route as WriteIdRouteImport } from './routes/write.$id'
 import { Route as UPenNameRouteImport } from './routes/u.$penName'
 import { Route as ReadIdRouteImport } from './routes/read.$id'
 import { Route as PublishIdRouteImport } from './routes/publish.$id'
+import { Route as EmbedIdRouteImport } from './routes/embed.$id'
 import { Route as CoverIdRouteImport } from './routes/cover.$id'
 import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as BookSlugRouteImport } from './routes/book.$slug'
@@ -128,6 +129,11 @@ const PublishIdRoute = PublishIdRouteImport.update({
   path: '/publish/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EmbedIdRoute = EmbedIdRouteImport.update({
+  id: '/embed/$id',
+  path: '/embed/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoverIdRoute = CoverIdRouteImport.update({
   id: '/cover/$id',
   path: '/cover/$id',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
+  '/embed/$id': typeof EmbedIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
   '/u/$penName': typeof UPenNameRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
+  '/embed/$id': typeof EmbedIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
   '/u/$penName': typeof UPenNameRoute
@@ -220,6 +228,7 @@ export interface FileRoutesById {
   '/book/$slug': typeof BookSlugRoute
   '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
+  '/embed/$id': typeof EmbedIdRoute
   '/publish/$id': typeof PublishIdRoute
   '/read/$id': typeof ReadIdRoute
   '/u/$penName': typeof UPenNameRoute
@@ -247,6 +256,7 @@ export interface FileRouteTypes {
     | '/book/$slug'
     | '/checkout/success'
     | '/cover/$id'
+    | '/embed/$id'
     | '/publish/$id'
     | '/read/$id'
     | '/u/$penName'
@@ -272,6 +282,7 @@ export interface FileRouteTypes {
     | '/book/$slug'
     | '/checkout/success'
     | '/cover/$id'
+    | '/embed/$id'
     | '/publish/$id'
     | '/read/$id'
     | '/u/$penName'
@@ -297,6 +308,7 @@ export interface FileRouteTypes {
     | '/book/$slug'
     | '/checkout/success'
     | '/cover/$id'
+    | '/embed/$id'
     | '/publish/$id'
     | '/read/$id'
     | '/u/$penName'
@@ -323,6 +335,7 @@ export interface RootRouteChildren {
   BookSlugRoute: typeof BookSlugRoute
   CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   CoverIdRoute: typeof CoverIdRoute
+  EmbedIdRoute: typeof EmbedIdRoute
   PublishIdRoute: typeof PublishIdRoute
   ReadIdRoute: typeof ReadIdRoute
   UPenNameRoute: typeof UPenNameRoute
@@ -465,6 +478,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublishIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/embed/$id': {
+      id: '/embed/$id'
+      path: '/embed/$id'
+      fullPath: '/embed/$id'
+      preLoaderRoute: typeof EmbedIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cover/$id': {
       id: '/cover/$id'
       path: '/cover/$id'
@@ -515,6 +535,7 @@ const rootRouteChildren: RootRouteChildren = {
   BookSlugRoute: BookSlugRoute,
   CheckoutSuccessRoute: CheckoutSuccessRoute,
   CoverIdRoute: CoverIdRoute,
+  EmbedIdRoute: EmbedIdRoute,
   PublishIdRoute: PublishIdRoute,
   ReadIdRoute: ReadIdRoute,
   UPenNameRoute: UPenNameRoute,
@@ -524,3 +545,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
