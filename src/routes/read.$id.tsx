@@ -203,6 +203,7 @@ function NarrateButton({ text }: { text: string }) {
   return (
     <button
       onClick={state === "playing" ? pause : start}
+      aria-label={state === "playing" ? "Pause narration" : "Listen to this chapter"}
       className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent text-primary"
       title="Listen"
       disabled={state === "loading"}
