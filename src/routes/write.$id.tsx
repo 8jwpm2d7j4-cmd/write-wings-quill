@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { aiAssist } from "@/lib/ai.functions";
-import { ArrowLeft, BookCopy, Image as ImageIcon, Mic, MicOff, MoreHorizontal, Plus, Send, Settings2, Sparkles, Globe, Lock } from "lucide-react";
+import { ArrowLeft, BookCopy, Image as ImageIcon, Mic, MicOff, MoreHorizontal, Plus, Send, Settings2, Sparkles, Globe, Lock, Upload, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
