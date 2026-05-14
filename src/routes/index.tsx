@@ -96,7 +96,7 @@ function Library() {
         <div className="flex items-center gap-1">
           <ThemeToggle />
           <NotificationsBell />
-          <Link to="/bookmarks" className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent" title="Saved"><Bookmark className="h-5 w-5" /></Link>
+          <Link to="/bookmarks" aria-label="View saved bookmarks" className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent" title="Saved"><Bookmark className="h-5 w-5" /></Link>
           <Link to="/profile" className="grid h-11 w-11 place-items-center rounded-full bg-accent text-accent-foreground font-serif">
             {(profile?.pen_name ?? "?").slice(0, 1).toUpperCase()}
           </Link>
