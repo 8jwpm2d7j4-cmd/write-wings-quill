@@ -1,0 +1,115 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth";
+import { ArrowLeft, Heart, MessageCircle, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/read/$id")({ component: Read });
+
+function Read() {
+  const { id } = Route.useParams();
+  const { user } = useAuth();
+  const qc = useQueryClient();
+
+  const { data: m } = useQuery({
+    queryKey: ["read", id],
+    queryFn: async () =>
+      (await supabase.from("manuscripts")
+        .select("*, profiles(pen_name,avatar_url)")
+        .eq("id", id).single()).data,
+  });
+  const { data: chapters = [] } = useQuery({
+    queryKey: ["read-ch", id],
+    queryFn: async () => (await supabase.from("chapters").select("*").eq("manuscript_id", id).order("order")).data ?? [],
+  });
+  const { data: likes = [] } = useQuery({
+    queryKey: ["likes", id],
+    queryFn: async () => (await supabase.from("likes").select("user_id").eq("manuscript_id", id)).data ?? [],
+  });
+  const { data: comments = [] } = useQuery({
+    queryKey: ["comments", id],
+    queryFn: async () => (await supabase.from("comments").select("*, profiles(pen_name)").eq("manuscript_id", id).order("created_at", { ascending: false })).data ?? [],
+  });
+
+  const liked = !!user && likes.some((l: any) => l.user_id === user.id);
+  const [body, setBody] = useState("");
+
+  const toggleLike = async () => {
+    if (!user) { toast.error("Sign in to like"); return; }
+    if (liked) await supabase.from("likes").delete().eq("user_id", user.id).eq("manuscript_id", id);
+    else await supabase.from("likes").insert({ user_id: user.id, manuscript_id: id });
+    qc.invalidateQueries({ queryKey: ["likes", id] });
+  };
+
+  const postComment = async () => {
+    if (!user || !body.trim()) return;
+    await supabase.from("comments").insert({ user_id: user.id, manuscript_id: id, body: body.trim() });
+    setBody("");
+    qc.invalidateQueries({ queryKey: ["comments", id] });
+  };
+
+  if (!m) return <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>;
+
+  return (
+    <div className="mx-auto max-w-md min-h-screen pb-32">
+      <header className="sticky top-0 z-10 flex items-center gap-2 bg-paper/90 backdrop-blur border-b border-border px-3 py-2.5">
+        <Link to="/discover" className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
+          <ArrowLeft className="h-5 w-5" />
+        </Link>
+        <div className="flex-1 truncate font-serif text-sm">{m.title}</div>
+        <button onClick={toggleLike} className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
+          <Heart className={liked ? "h-5 w-5 fill-primary text-primary" : "h-5 w-5"} />
+        </button>
+      </header>
+
+      <div className="px-5 pt-8">
+        {m.cover_url && (
+          <div className="book-cover mx-auto aspect-[2/3] w-44 overflow-hidden">
+            <img src={m.cover_url} alt={m.title} className="h-full w-full object-cover" />
+          </div>
+        )}
+        <div className="mt-5 text-center">
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{m.genre || "Fiction"}</div>
+          <h1 className="mt-1 font-serif text-3xl">{m.title}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">by {(m as any).profiles?.pen_name ?? "Anonymous"}</p>
+          {m.synopsis && <p className="mt-4 text-sm text-foreground/80">{m.synopsis}</p>}
+          <div className="mt-3 text-xs text-muted-foreground">{m.word_count.toLocaleString()} words · {likes.length} likes</div>
+        </div>
+
+        <article className="mt-10 space-y-10 font-serif text-[17px] leading-relaxed">
+          {chapters.map((c: any) => (
+            <section key={c.id}>
+              <h2 className="font-serif text-2xl border-b border-border pb-2 mb-4">{c.title}</h2>
+              {c.content.split(/\n\n+/).map((p: string, i: number) => <p key={i} className="mb-4">{p}</p>)}
+            </section>
+          ))}
+        </article>
+
+        <section className="mt-12">
+          <h3 className="font-serif text-xl flex items-center gap-2"><MessageCircle className="h-5 w-5" /> Comments</h3>
+          {user ? (
+            <div className="mt-3 flex gap-2">
+              <Textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Share your thoughts…" className="min-h-[60px]" />
+              <Button onClick={postComment} className="rounded-full h-10 self-end" size="icon"><Send className="h-4 w-4" /></Button>
+            </div>
+          ) : (
+            <Link to="/auth" className="mt-3 block text-sm text-primary">Sign in to comment</Link>
+          )}
+          <ul className="mt-5 space-y-3">
+            {comments.map((c: any) => (
+              <li key={c.id} className="paper-card p-3">
+                <div className="text-xs font-medium">{c.profiles?.pen_name ?? "Reader"}</div>
+                <p className="mt-1 text-sm text-foreground/85">{c.body}</p>
+              </li>
+            ))}
+            {comments.length === 0 && <p className="text-sm text-muted-foreground">No comments yet.</p>}
+          </ul>
+        </section>
+      </div>
+    </div>
+  );
+}
