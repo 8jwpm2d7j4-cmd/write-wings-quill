@@ -6,14 +6,6 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { userIsPro } from "@/lib/membership.server";
 
 const FREE_DAILY_ASSISTS = 5;
-const dailyUsage = new Map<string, { date: string; count: number }>();
-function bumpUsage(userId: string): number {
-  const today = new Date().toISOString().slice(0, 10);
-  const cur = dailyUsage.get(userId);
-  if (!cur || cur.date !== today) { dailyUsage.set(userId, { date: today, count: 1 }); return 1; }
-  cur.count += 1;
-  return cur.count;
-}
 
 const assistInput = z.object({
   mode: z.enum(["continue", "rewrite", "improve", "brainstorm", "outline"]),
