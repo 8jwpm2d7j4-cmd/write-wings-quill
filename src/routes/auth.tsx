@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { BookOpen, Sparkles } from "lucide-react";
+import { redeemStoredRef } from "@/lib/referral";
+import { SignupCounter } from "@/components/SignupCounter";
 
 export const Route = createFileRoute("/auth")({ component: AuthPage });
 
