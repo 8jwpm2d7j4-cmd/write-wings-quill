@@ -10,7 +10,21 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { readingLabel } from "@/lib/reading";
 
-export const Route = createFileRoute("/")({ component: LibraryPage });
+export const Route = createFileRoute("/")({
+  component: LibraryPage,
+  head: () => ({
+    meta: [
+      { title: "Your library — Quill" },
+      { name: "description", content: "Your personal writing library on Quill. Continue your manuscripts, pick up reading where you left off, and start a new story." },
+      { property: "og:title", content: "Your library — Quill" },
+      { property: "og:description", content: "Pick up where you left off and start a new story on Quill." },
+      { property: "og:url", content: "https://write-wings-quill.lovable.app/" },
+    ],
+    links: [
+      { rel: "canonical", href: "https://write-wings-quill.lovable.app/" },
+    ],
+  }),
+});
 
 function LibraryPage() {
   return (
