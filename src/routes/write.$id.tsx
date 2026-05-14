@@ -5,7 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import { useServerFn } from "@tanstack/react-start";
 import { aiAssist } from "@/lib/ai.functions";
-import { ArrowLeft, BookCopy, Image as ImageIcon, MoreHorizontal, Plus, Send, Settings2, Sparkles, Globe, Lock } from "lucide-react";
+import { ArrowLeft, BookCopy, Image as ImageIcon, Mic, MicOff, MoreHorizontal, Plus, Send, Settings2, Sparkles, Globe, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
@@ -127,8 +127,42 @@ function WritePage() {
         />
       </div>
 
+      <DictateButton onTranscript={(t) => setContent(c => c + (c.endsWith(" ") || !c ? "" : " ") + t)} />
       <AiBar content={content} onInsert={(t) => setContent(c => (c + (c.endsWith("\n") ? "" : "\n\n") + t))} />
     </div>
+  );
+}
+
+function DictateButton({ onTranscript }: { onTranscript: (t: string) => void }) {
+  const [listening, setListening] = useState(false);
+  const recRef = useRef<any>(null);
+
+  const toggle = () => {
+    if (listening) { recRef.current?.stop(); setListening(false); return; }
+    const SR: any = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) { toast.error("Voice dictation not supported in this browser"); return; }
+    const rec = new SR();
+    rec.continuous = true;
+    rec.interimResults = false;
+    rec.lang = "en-US";
+    rec.onresult = (e: any) => {
+      const last = e.results[e.results.length - 1];
+      if (last.isFinal) onTranscript(last[0].transcript.trim());
+    };
+    rec.onend = () => setListening(false);
+    rec.onerror = (e: any) => { toast.error(`Mic: ${e.error}`); setListening(false); };
+    rec.start();
+    recRef.current = rec;
+    setListening(true);
+    toast.success("Listening… speak naturally");
+  };
+
+  return (
+    <button onClick={toggle}
+      className={cn("fixed bottom-5 left-5 z-40 grid h-14 w-14 place-items-center rounded-full shadow-cover transition-colors",
+        listening ? "bg-destructive text-destructive-foreground animate-pulse" : "bg-card border border-border text-foreground")}>
+      {listening ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
+    </button>
   );
 }
 

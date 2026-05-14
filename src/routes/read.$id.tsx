@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { ArrowLeft, Heart, MessageCircle, Send } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { narrate } from "@/lib/tts.functions";
+import { ArrowLeft, Heart, MessageCircle, Pause, Play, Send, Volume2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
@@ -83,7 +85,10 @@ function Read() {
         <article className="mt-10 space-y-10 font-serif text-[17px] leading-relaxed">
           {chapters.map((c: any) => (
             <section key={c.id}>
-              <h2 className="font-serif text-2xl border-b border-border pb-2 mb-4">{c.title}</h2>
+              <div className="flex items-center justify-between border-b border-border pb-2 mb-4">
+                <h2 className="font-serif text-2xl">{c.title}</h2>
+                <NarrateButton text={`${c.title}. ${c.content}`} />
+              </div>
               {c.content.split(/\n\n+/).map((p: string, i: number) => <p key={i} className="mb-4">{p}</p>)}
             </section>
           ))}
@@ -111,5 +116,47 @@ function Read() {
         </section>
       </div>
     </div>
+  );
+}
+
+function NarrateButton({ text }: { text: string }) {
+  const [state, setState] = useState<"idle" | "loading" | "playing" | "paused">("idle");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const callNarrate = useServerFn(narrate);
+
+  const start = async () => {
+    if (audioRef.current) {
+      audioRef.current.play();
+      setState("playing");
+      return;
+    }
+    setState("loading");
+    try {
+      const r = await callNarrate({ data: { text: text.slice(0, 4500) } });
+      const audio = new Audio(`data:audio/mpeg;base64,${r.audio}`);
+      audio.onended = () => setState("idle");
+      audio.onpause = () => setState((s) => (s === "playing" ? "paused" : s));
+      audioRef.current = audio;
+      await audio.play();
+      setState("playing");
+    } catch (e) {
+      setState("idle");
+      toast.error(e instanceof Error ? e.message : "Narration failed");
+    }
+  };
+
+  const pause = () => { audioRef.current?.pause(); setState("paused"); };
+
+  return (
+    <button
+      onClick={state === "playing" ? pause : start}
+      className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent text-primary"
+      title="Listen"
+      disabled={state === "loading"}
+    >
+      {state === "loading" ? <Volume2 className="h-4 w-4 animate-pulse" />
+        : state === "playing" ? <Pause className="h-4 w-4" />
+        : <Play className="h-4 w-4" />}
+    </button>
   );
 }

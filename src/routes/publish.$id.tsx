@@ -7,6 +7,7 @@ import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Copy, Download, ExternalLink, Globe, Lock } from "lucide-react";
 import { toast } from "sonner";
+import { buildEpub } from "@/lib/epub";
 
 export const Route = createFileRoute("/publish/$id")({ component: () => <AppShell><Publish /></AppShell> });
 
@@ -16,7 +17,8 @@ function Publish() {
 
   const { data: manuscript, refetch } = useQuery({
     queryKey: ["m", id],
-    queryFn: async () => (await supabase.from("manuscripts").select("*").eq("id", id).single()).data,
+    queryFn: async () =>
+      (await supabase.from("manuscripts").select("*, profiles(pen_name)").eq("id", id).single()).data,
   });
   const { data: chapters = [] } = useQuery({
     queryKey: ["chapters", id],
@@ -40,25 +42,35 @@ function Publish() {
     refetchInv();
   };
 
-  const exportEpub = () => {
+  const exportEpub = async () => {
     if (!manuscript) return;
-    // Simple HTML-as-EPUB-substitute (.html) — many e-readers accept this.
-    // For real EPUB, plug in a generator later.
-    const html = `<!doctype html><html><head><meta charset="utf-8"><title>${escape(manuscript.title)}</title>
-<style>body{font-family:Georgia,serif;max-width:38em;margin:2em auto;padding:0 1em;line-height:1.7}h1,h2{font-family:Georgia,serif}</style></head>
-<body><h1>${escape(manuscript.title)}</h1><p><em>${escape(manuscript.synopsis ?? "")}</em></p>
-${chapters.map((c: any) => `<h2>${escape(c.title)}</h2>${c.content.split(/\n\n+/).map((p: string) => `<p>${escape(p)}</p>`).join("")}`).join("")}
-</body></html>`;
-    const blob = new Blob([html], { type: "text/html" });
+    let coverDataUrl: string | undefined;
+    if (manuscript.cover_url) {
+      try {
+        const r = await fetch(manuscript.cover_url);
+        const b = await r.blob();
+        coverDataUrl = await new Promise((res) => {
+          const fr = new FileReader();
+          fr.onloadend = () => res(fr.result as string);
+          fr.readAsDataURL(b);
+        });
+      } catch { /* skip cover */ }
+    }
+    const blob = await buildEpub({
+      title: manuscript.title,
+      author: (manuscript as any).profiles?.pen_name ?? "Unknown",
+      synopsis: manuscript.synopsis ?? undefined,
+      chapters: chapters.map((c: any) => ({ title: c.title, content: c.content })),
+      coverDataUrl,
+    });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a"); a.href = url; a.download = `${manuscript.title || "manuscript"}.html`;
-    a.click(); URL.revokeObjectURL(url);
-    toast.success("Manuscript downloaded");
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${manuscript.title || "manuscript"}.epub`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success("EPUB downloaded — ready for KDP");
   };
-
-  function escape(s: string) {
-    return s.replace(/[&<>"]/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]!));
-  }
 
   return (
     <div className="px-5 pt-12">
@@ -82,7 +94,7 @@ ${chapters.map((c: any) => `<h2>${escape(c.title)}</h2>${c.content.split(/\n\n+/
         <h2 className="font-serif text-lg">Export manuscript</h2>
         <p className="mt-1 text-sm text-muted-foreground">Download a clean file you can upload to KDP, Wattpad, Royal Road, or attach to an email.</p>
         <Button variant="outline" onClick={exportEpub} className="mt-4 w-full rounded-full">
-          <Download className="mr-2 h-4 w-4" />Download .html (KDP-compatible)
+          <Download className="mr-2 h-4 w-4" />Download .epub (Kindle, Apple Books, Kobo)
         </Button>
         <div className="mt-3 grid gap-2 text-xs text-muted-foreground">
           <ExternalGuide href="https://kdp.amazon.com/" name="Amazon KDP" steps="Sign in → Create → Paperback or Kindle eBook → upload your file & cover." />
