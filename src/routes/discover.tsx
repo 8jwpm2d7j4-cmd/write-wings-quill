@@ -75,9 +75,10 @@ function Discover() {
       <h1 className="font-serif text-3xl">Discover</h1>
       <p className="mt-1 text-sm text-muted-foreground">Stories shared by writers around the world.</p>
 
+      <label htmlFor="discover-search" className="sr-only">Search stories</label>
       <div className="relative mt-5">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title, genre, author…" className="pl-9 h-11 rounded-full" />
+        <Search aria-hidden="true" className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input id="discover-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title, genre, author…" className="pl-9 h-11 rounded-full" />
       </div>
 
       <div className="mt-4 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1">
