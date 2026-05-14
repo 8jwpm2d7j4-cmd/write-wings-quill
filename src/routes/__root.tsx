@@ -124,6 +124,13 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  if (typeof window !== "undefined") {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      const code = p.get("ref");
+      if (code) localStorage.setItem("quill.refcode", code.toLowerCase());
+    } catch {}
+  }
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
