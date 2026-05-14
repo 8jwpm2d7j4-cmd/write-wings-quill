@@ -15,6 +15,7 @@ import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as NewRouteImport } from './routes/new'
 import { Route as MarketingRouteImport } from './routes/marketing'
 import { Route as ManageRouteImport } from './routes/manage'
+import { Route as InviteRouteImport } from './routes/invite'
 import { Route as GoalsRouteImport } from './routes/goals'
 import { Route as FeedRouteImport } from './routes/feed'
 import { Route as DiscoverRouteImport } from './routes/discover'
@@ -60,6 +61,11 @@ const MarketingRoute = MarketingRouteImport.update({
 const ManageRoute = ManageRouteImport.update({
   id: '/manage',
   path: '/manage',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InviteRoute = InviteRouteImport.update({
+  id: '/invite',
+  path: '/invite',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GoalsRoute = GoalsRouteImport.update({
@@ -153,6 +159,7 @@ export interface FileRoutesByFullPath {
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
+  '/invite': typeof InviteRoute
   '/manage': typeof ManageRoute
   '/marketing': typeof MarketingRoute
   '/new': typeof NewRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByTo {
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
+  '/invite': typeof InviteRoute
   '/manage': typeof ManageRoute
   '/marketing': typeof MarketingRoute
   '/new': typeof NewRoute
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/discover': typeof DiscoverRoute
   '/feed': typeof FeedRoute
   '/goals': typeof GoalsRoute
+  '/invite': typeof InviteRoute
   '/manage': typeof ManageRoute
   '/marketing': typeof MarketingRoute
   '/new': typeof NewRoute
@@ -228,6 +237,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/feed'
     | '/goals'
+    | '/invite'
     | '/manage'
     | '/marketing'
     | '/new'
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/feed'
     | '/goals'
+    | '/invite'
     | '/manage'
     | '/marketing'
     | '/new'
@@ -276,6 +287,7 @@ export interface FileRouteTypes {
     | '/discover'
     | '/feed'
     | '/goals'
+    | '/invite'
     | '/manage'
     | '/marketing'
     | '/new'
@@ -301,6 +313,7 @@ export interface RootRouteChildren {
   DiscoverRoute: typeof DiscoverRoute
   FeedRoute: typeof FeedRoute
   GoalsRoute: typeof GoalsRoute
+  InviteRoute: typeof InviteRoute
   ManageRoute: typeof ManageRoute
   MarketingRoute: typeof MarketingRoute
   NewRoute: typeof NewRoute
@@ -359,6 +372,13 @@ declare module '@tanstack/react-router' {
       path: '/manage'
       fullPath: '/manage'
       preLoaderRoute: typeof ManageRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/invite': {
+      id: '/invite'
+      path: '/invite'
+      fullPath: '/invite'
+      preLoaderRoute: typeof InviteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/goals': {
@@ -485,6 +505,7 @@ const rootRouteChildren: RootRouteChildren = {
   DiscoverRoute: DiscoverRoute,
   FeedRoute: FeedRoute,
   GoalsRoute: GoalsRoute,
+  InviteRoute: InviteRoute,
   ManageRoute: ManageRoute,
   MarketingRoute: MarketingRoute,
   NewRoute: NewRoute,
@@ -503,3 +524,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
