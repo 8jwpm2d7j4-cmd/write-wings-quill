@@ -80,12 +80,21 @@ function Profile() {
         <Button onClick={save} className="w-full rounded-full">Save</Button>
       </div>
 
-      <h2 className="mt-8 font-serif text-xl">Coming soon</h2>
-      <div className="mt-3 grid grid-cols-2 gap-3">
-        <ComingSoon icon={Trophy} title="Writing contests" subtitle="Compete monthly with prompts" />
-        <ComingSoon icon={Mic} title="Voice dictation" subtitle="Speak your chapters" />
-        <ComingSoon icon={Headphones} title="AI narration" subtitle="Hear your draft as audio" />
+      <h2 className="mt-8 font-serif text-xl">Explore</h2>
+      <div className="mt-3 grid grid-cols-3 gap-3">
+        <NavCard to="/contests" icon={Trophy} title="Contests" />
+        <NavCard to="/analytics" icon={BarChart3} title="Analytics" />
+        <NavCard to="/feed" icon={Rss} title="Feed" />
       </div>
+
+      {user && (
+        <>
+          <h2 className="mt-8 font-serif text-xl flex items-center gap-2">
+            <Sparkles className="h-5 w-5" /> Achievements
+          </h2>
+          <div className="mt-3"><AchievementWall userId={user.id} /></div>
+        </>
+      )}
 
       <Button variant="outline" onClick={signOut} className="mt-8 w-full rounded-full">
         <LogOut className="mr-2 h-4 w-4" />Sign out
