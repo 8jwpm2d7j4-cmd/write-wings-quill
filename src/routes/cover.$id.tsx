@@ -10,8 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Sparkles, Check } from "lucide-react";
+import { ArrowLeft, Sparkles, Check, Crown } from "lucide-react";
 import { toast } from "sonner";
+import { useSubscription } from "@/hooks/useSubscription";
+import { SubscribeButton } from "@/components/SubscribeButton";
 
 export const Route = createFileRoute("/cover/$id")({ component: () => <AppShell><Cover /></AppShell> });
 
@@ -19,6 +21,7 @@ function Cover() {
   const { id } = Route.useParams();
   const { user } = useAuth();
   const gen = useServerFn(generateCover);
+  const { isPro } = useSubscription();
 
   const { data: manuscript, refetch } = useQuery({
     queryKey: ["m", id],
@@ -95,14 +98,23 @@ function Cover() {
           <Textarea value={vibe} onChange={(e) => setVibe(e.target.value)} className="min-h-[80px]"
             placeholder="e.g. moody forest, golden-hour cinematic, watercolor portrait" />
         </div>
-        <div className="grid grid-cols-2 gap-3">
-          <Button onClick={run} disabled={busy} variant="outline" className="rounded-full h-11">
-            <Sparkles className="mr-2 h-4 w-4" />{busy ? "Conjuring…" : "Generate"}
-          </Button>
-          <Button onClick={save} disabled={!preview || busy} className="rounded-full h-11">
-            <Check className="mr-2 h-4 w-4" />Save cover
-          </Button>
-        </div>
+        {!isPro ? (
+          <div className="rounded-xl border border-dashed border-primary/40 bg-primary/5 p-4 text-center">
+            <Crown className="mx-auto h-5 w-5 text-primary" />
+            <p className="mt-2 text-sm font-medium">AI cover generation is a Pro feature</p>
+            <p className="mt-1 text-xs text-muted-foreground">Unlimited covers, AI co-writer, EPUB export, beta invites — $6/mo.</p>
+            <SubscribeButton className="mt-3 w-full rounded-full" />
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-3">
+            <Button onClick={run} disabled={busy} variant="outline" className="rounded-full h-11">
+              <Sparkles className="mr-2 h-4 w-4" />{busy ? "Conjuring…" : "Generate"}
+            </Button>
+            <Button onClick={save} disabled={!preview || busy} className="rounded-full h-11">
+              <Check className="mr-2 h-4 w-4" />Save cover
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

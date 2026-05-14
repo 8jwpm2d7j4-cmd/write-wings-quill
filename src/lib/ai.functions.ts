@@ -65,7 +65,10 @@ const coverInput = z.object({
 export const generateCover = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => coverInput.parse(d))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    if (!(await userIsPro(context.userId))) {
+      throw new Error("AI cover generation is a Quill Pro feature. Upgrade to design unlimited covers.");
+    }
     const key = process.env.LOVABLE_API_KEY;
     if (!key) throw new Error("Missing LOVABLE_API_KEY");
 
