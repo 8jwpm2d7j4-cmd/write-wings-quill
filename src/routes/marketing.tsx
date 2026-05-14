@@ -53,6 +53,7 @@ function Marketing() {
       </Link>
       <h1 className="mt-2 font-serif text-3xl">Share Quill</h1>
       <p className="mt-1 text-sm text-muted-foreground">Posters, captions, and a 5-second promo video — ready to post.</p>
+      <div className="mt-3"><SignupCounter /></div>
 
       {/* Promo video */}
       <section className="mt-6">
