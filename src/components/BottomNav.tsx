@@ -2,13 +2,14 @@ import { Link, useLocation } from "@tanstack/react-router";
 import { BookOpen, Compass, PenSquare, Target, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const tabs = [
+type Tab = { to: string; label: string; icon: typeof BookOpen; highlight?: boolean };
+const tabs: Tab[] = [
   { to: "/", label: "Library", icon: BookOpen },
   { to: "/discover", label: "Discover", icon: Compass },
   { to: "/new", label: "Write", icon: PenSquare, highlight: true },
   { to: "/goals", label: "Goals", icon: Target },
   { to: "/profile", label: "You", icon: User },
-] as const;
+];
 
 export function BottomNav() {
   const { pathname } = useLocation();
