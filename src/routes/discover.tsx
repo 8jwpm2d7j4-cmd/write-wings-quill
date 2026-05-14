@@ -2,32 +2,47 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
-import { Heart, Search } from "lucide-react";
+import { Flame, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { readingLabel } from "@/lib/reading";
+
+const GENRES = ["All", "Fiction", "Romance", "Sci-Fi", "Fantasy", "Mystery", "Thriller", "Memoir", "Poetry", "Non-fiction"];
 
 export const Route = createFileRoute("/discover")({ component: () => <AppShell><Discover /></AppShell> });
 
 function Discover() {
   const [q, setQ] = useState("");
+  const [genre, setGenre] = useState("All");
+
   const { data: works = [], isLoading } = useQuery({
     queryKey: ["discover"],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("manuscripts")
-        .select("id,title,synopsis,genre,cover_url,author_id,word_count,profiles(pen_name,avatar_url)")
+        .select("id,title,synopsis,genre,cover_url,author_id,word_count,updated_at,profiles(pen_name,avatar_url),likes(user_id)")
         .eq("status", "published")
         .order("updated_at", { ascending: false })
-        .limit(50);
+        .limit(80);
       if (error) throw error;
       return data ?? [];
     },
   });
 
-  const filtered = q
-    ? works.filter((w: any) =>
-        [w.title, w.synopsis, w.genre, w.profiles?.pen_name].filter(Boolean).join(" ").toLowerCase().includes(q.toLowerCase()))
-    : works;
+  const trending = useMemo(() => {
+    const weekAgo = Date.now() - 7 * 24 * 3600 * 1000;
+    return [...works]
+      .map((w: any) => ({ ...w, _likes: (w.likes ?? []).length }))
+      .filter((w) => new Date(w.updated_at).getTime() > weekAgo || w._likes > 0)
+      .sort((a, b) => b._likes - a._likes)
+      .slice(0, 6);
+  }, [works]);
+
+  const filtered = (works as any[])
+    .filter((w) => genre === "All" || (w.genre || "").toLowerCase() === genre.toLowerCase())
+    .filter((w) =>
+      !q ? true : [w.title, w.synopsis, w.genre, w.profiles?.pen_name].filter(Boolean).join(" ").toLowerCase().includes(q.toLowerCase()),
+    );
 
   return (
     <div className="px-5 pt-12">
@@ -39,17 +54,44 @@ function Discover() {
         <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title, genre, author…" className="pl-9 h-11 rounded-full" />
       </div>
 
-      <div className="mt-7 space-y-5">
-        {isLoading && [0,1,2].map(i => <div key={i} className="h-32 paper-card animate-pulse" />)}
-        {!isLoading && filtered.length === 0 && (
-          <div className="paper-card p-8 text-center text-sm text-muted-foreground">
-            No stories yet. Be the first to publish from your library.
+      <div className="mt-4 -mx-5 flex gap-2 overflow-x-auto px-5 pb-1">
+        {GENRES.map((g) => (
+          <button
+            key={g}
+            onClick={() => setGenre(g)}
+            className={`shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${genre === g ? "bg-primary text-primary-foreground border-primary" : "border-border text-muted-foreground hover:text-foreground"}`}
+          >
+            {g}
+          </button>
+        ))}
+      </div>
+
+      {trending.length > 0 && (
+        <section className="mt-7">
+          <h2 className="font-serif text-lg flex items-center gap-2"><Flame className="h-4 w-4 text-primary" /> Trending this week</h2>
+          <div className="mt-3 -mx-5 flex gap-3 overflow-x-auto px-5 pb-2">
+            {trending.map((w: any) => (
+              <Link key={w.id} to="/read/$id" params={{ id: w.id }} className="shrink-0 w-32">
+                <div className="book-cover aspect-[2/3] overflow-hidden bg-gradient-to-br from-secondary to-muted">
+                  {w.cover_url ? <img src={w.cover_url} alt={w.title} className="h-full w-full object-cover" /> : <div className="grid h-full place-items-center font-serif text-xs px-2 text-center">{w.title}</div>}
+                </div>
+                <div className="mt-2 font-serif text-sm leading-tight line-clamp-2">{w.title}</div>
+                <div className="text-[11px] text-muted-foreground">{w._likes} likes</div>
+              </Link>
+            ))}
           </div>
+        </section>
+      )}
+
+      <div className="mt-7 space-y-5">
+        {isLoading && [0, 1, 2].map((i) => <div key={i} className="h-32 paper-card animate-pulse" />)}
+        {!isLoading && filtered.length === 0 && (
+          <div className="paper-card p-8 text-center text-sm text-muted-foreground">No stories match your filter.</div>
         )}
         {filtered.map((w: any) => (
           <Link key={w.id} to="/read/$id" params={{ id: w.id }} className="block">
             <article className="paper-card flex gap-4 p-4">
-              <div className="book-cover h-32 w-22 shrink-0 overflow-hidden bg-gradient-to-br from-secondary to-muted" style={{ width: 88 }}>
+              <div className="book-cover h-32 shrink-0 overflow-hidden bg-gradient-to-br from-secondary to-muted" style={{ width: 88 }}>
                 {w.cover_url ? (
                   <img src={w.cover_url} alt={w.title} className="h-full w-full object-cover" />
                 ) : (
@@ -62,8 +104,9 @@ function Discover() {
                 <p className="text-xs text-muted-foreground mt-0.5">by {w.profiles?.pen_name ?? "Anonymous"}</p>
                 <p className="mt-2 text-sm text-foreground/80 line-clamp-2">{w.synopsis ?? "No synopsis yet."}</p>
                 <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
-                  <span>{w.word_count.toLocaleString()} words</span>
-                  <span className="inline-flex items-center gap-1"><Heart className="h-3 w-3" /> Read</span>
+                  <span>{readingLabel(w.word_count)}</span>
+                  <span>·</span>
+                  <span>{(w.likes ?? []).length} likes</span>
                 </div>
               </div>
             </article>
