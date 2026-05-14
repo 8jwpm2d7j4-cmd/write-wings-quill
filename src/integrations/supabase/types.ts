@@ -64,6 +64,24 @@ export type Database = {
           },
         ]
       }
+      bookmarks: {
+        Row: {
+          created_at: string
+          manuscript_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          manuscript_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          manuscript_id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chapter_revisions: {
         Row: {
           chapter_id: string
@@ -165,6 +183,24 @@ export type Database = {
           },
         ]
       }
+      comment_likes: {
+        Row: {
+          comment_id: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          comment_id: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          comment_id?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       comments: {
         Row: {
           body: string
@@ -199,6 +235,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      content_reports: {
+        Row: {
+          comment_id: string | null
+          created_at: string
+          details: string | null
+          id: string
+          manuscript_id: string | null
+          reason: string
+          reporter_id: string
+          status: string
+        }
+        Insert: {
+          comment_id?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          manuscript_id?: string | null
+          reason: string
+          reporter_id: string
+          status?: string
+        }
+        Update: {
+          comment_id?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          manuscript_id?: string | null
+          reason?: string
+          reporter_id?: string
+          status?: string
+        }
+        Relationships: []
       }
       contest_entries: {
         Row: {
@@ -441,6 +510,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          id: string
+          kind: string
+          manuscript_id: string | null
+          message: string
+          read: boolean
+          user_id: string
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          manuscript_id?: string | null
+          message: string
+          read?: boolean
+          user_id: string
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          manuscript_id?: string | null
+          message?: string
+          read?: boolean
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -500,6 +602,30 @@ export type Database = {
           created_at?: string
           emoji?: string
           id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      reading_progress: {
+        Row: {
+          chapter_id: string | null
+          manuscript_id: string
+          scroll_pct: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          chapter_id?: string | null
+          manuscript_id: string
+          scroll_pct?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          chapter_id?: string | null
+          manuscript_id?: string
+          scroll_pct?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []

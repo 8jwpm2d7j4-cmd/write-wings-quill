@@ -4,8 +4,11 @@ import { useAuth } from "@/lib/auth";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Plus, Sparkles, BookOpen, Globe, Lock } from "lucide-react";
+import { Plus, Sparkles, BookOpen, Globe, Lock, Bookmark, ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { NotificationsBell } from "@/components/NotificationsBell";
+import { readingLabel } from "@/lib/reading";
 
 export const Route = createFileRoute("/")({ component: LibraryPage });
 
@@ -55,17 +58,59 @@ function Library() {
     navigate({ to: "/write/$id", params: { id: data.id } });
   };
 
+  const { data: continueReading } = useQuery({
+    queryKey: ["continue", user?.id],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("reading_progress")
+        .select("manuscript_id, scroll_pct, updated_at, manuscripts(id,title,cover_url,word_count,profiles(pen_name))")
+        .eq("user_id", user!.id)
+        .order("updated_at", { ascending: false })
+        .limit(3);
+      return data ?? [];
+    },
+    enabled: !!user,
+  });
+
   return (
     <div className="px-5 pt-12">
-      <header className="flex items-end justify-between">
-        <div>
+      <header className="flex items-end justify-between gap-2">
+        <div className="min-w-0">
           <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Welcome back</p>
-          <h1 className="mt-1 font-serif text-3xl">{profile?.pen_name ?? "Writer"}</h1>
+          <h1 className="mt-1 font-serif text-3xl truncate">{profile?.pen_name ?? "Writer"}</h1>
         </div>
-        <Link to="/profile" className="grid h-11 w-11 place-items-center rounded-full bg-accent text-accent-foreground font-serif">
-          {(profile?.pen_name ?? "?").slice(0, 1).toUpperCase()}
-        </Link>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <NotificationsBell />
+          <Link to="/bookmarks" className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent" title="Saved"><Bookmark className="h-5 w-5" /></Link>
+          <Link to="/profile" className="grid h-11 w-11 place-items-center rounded-full bg-accent text-accent-foreground font-serif">
+            {(profile?.pen_name ?? "?").slice(0, 1).toUpperCase()}
+          </Link>
+        </div>
       </header>
+
+      {continueReading && continueReading.length > 0 && (
+        <section className="mt-8">
+          <h2 className="font-serif text-lg">Continue reading</h2>
+          <div className="mt-3 -mx-5 flex gap-3 overflow-x-auto px-5 pb-2">
+            {continueReading.map((p: any) => p.manuscripts && (
+              <Link key={p.manuscript_id} to="/read/$id" params={{ id: p.manuscript_id }} className="paper-card shrink-0 w-56 p-3 flex gap-3">
+                <div className="book-cover h-20 w-14 shrink-0 overflow-hidden bg-gradient-to-br from-secondary to-muted">
+                  {p.manuscripts.cover_url && <img src={p.manuscripts.cover_url} alt="" className="h-full w-full object-cover" />}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="font-serif text-sm line-clamp-2">{p.manuscripts.title}</div>
+                  <div className="text-[11px] text-muted-foreground mt-0.5">{readingLabel(p.manuscripts.word_count)}</div>
+                  <div className="mt-2 h-1 w-full rounded-full bg-muted overflow-hidden">
+                    <div className="h-full bg-primary" style={{ width: `${Math.min(100, p.scroll_pct || 0)}%` }} />
+                  </div>
+                  <div className="mt-1 inline-flex items-center gap-1 text-[11px] text-primary">Resume <ArrowRight className="h-3 w-3" /></div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <button
         onClick={createNew}

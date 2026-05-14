@@ -14,6 +14,12 @@ import { Reactions } from "@/components/Reactions";
 import { FollowButton } from "@/components/FollowButton";
 import { PaidChapterGate } from "@/components/PaidChapterGate";
 import { pingReadingStreak } from "@/lib/streaks";
+import { BookmarkButton } from "@/components/BookmarkButton";
+import { ShareButton } from "@/components/ShareButton";
+import { ReportButton } from "@/components/ReportButton";
+import { CommentItem } from "@/components/CommentItem";
+import { readingLabel } from "@/lib/reading";
+import { notify } from "@/lib/notify";
 
 export const Route = createFileRoute("/read/$id")({ component: Read });
 
@@ -50,19 +56,39 @@ function Read() {
 
   useEffect(() => { if (user) pingReadingStreak(user.id).catch(() => {}); }, [user?.id, id]);
 
+  // Track reading progress (scroll %)
+  useEffect(() => {
+    if (!user) return;
+    let last = 0;
+    const onScroll = () => {
+      const h = document.documentElement;
+      const pct = Math.round(((h.scrollTop + window.innerHeight) / h.scrollHeight) * 100);
+      if (Math.abs(pct - last) < 5) return;
+      last = pct;
+      supabase.from("reading_progress").upsert({ user_id: user.id, manuscript_id: id, scroll_pct: Math.min(100, pct), updated_at: new Date().toISOString() }).then(() => {});
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [user?.id, id]);
+
   const liked = !!user && likes.some((l: any) => l.user_id === user.id);
   const [body, setBody] = useState("");
 
   const toggleLike = async () => {
     if (!user) { toast.error("Sign in to like"); return; }
-    if (liked) await supabase.from("likes").delete().eq("user_id", user.id).eq("manuscript_id", id);
-    else await supabase.from("likes").insert({ user_id: user.id, manuscript_id: id });
+    if (liked) {
+      await supabase.from("likes").delete().eq("user_id", user.id).eq("manuscript_id", id);
+    } else {
+      await supabase.from("likes").insert({ user_id: user.id, manuscript_id: id });
+      if (m?.author_id) notify({ userId: m.author_id, actorId: user.id, kind: "like", message: `Someone liked "${m.title}"`, manuscriptId: id }).catch(() => {});
+    }
     qc.invalidateQueries({ queryKey: ["likes", id] });
   };
 
   const postComment = async () => {
     if (!user || !body.trim()) return;
     await supabase.from("comments").insert({ user_id: user.id, manuscript_id: id, body: body.trim() });
+    if (m?.author_id) notify({ userId: m.author_id, actorId: user.id, kind: "comment", message: `New comment on "${m.title}"`, manuscriptId: id }).catch(() => {});
     setBody("");
     qc.invalidateQueries({ queryKey: ["comments", id] });
   };
@@ -71,11 +97,13 @@ function Read() {
 
   return (
     <div className="mx-auto max-w-md min-h-screen pb-32">
-      <header className="sticky top-0 z-10 flex items-center gap-2 bg-paper/90 backdrop-blur border-b border-border px-3 py-2.5">
+      <header className="sticky top-0 z-10 flex items-center gap-1 bg-paper/90 backdrop-blur border-b border-border px-3 py-2.5">
         <Link to="/discover" className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
           <ArrowLeft className="h-5 w-5" />
         </Link>
         <div className="flex-1 truncate font-serif text-sm">{m.title}</div>
+        <BookmarkButton manuscriptId={m.id} />
+        <ShareButton title={m.title} text={m.synopsis ?? `Read "${m.title}" on Quill`} />
         <button onClick={toggleLike} className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent">
           <Heart className={liked ? "h-5 w-5 fill-primary text-primary" : "h-5 w-5"} />
         </button>
@@ -92,11 +120,12 @@ function Read() {
           <h1 className="mt-1 font-serif text-3xl">{m.title}</h1>
           <p className="mt-1 text-sm text-muted-foreground">by {(m as any).profiles?.pen_name ?? "Anonymous"}</p>
           {m.synopsis && <p className="mt-4 text-sm text-foreground/80">{m.synopsis}</p>}
-          <div className="mt-3 text-xs text-muted-foreground">{m.word_count.toLocaleString()} words · {likes.length} likes</div>
+          <div className="mt-3 text-xs text-muted-foreground">{readingLabel(m.word_count)} · {m.word_count.toLocaleString()} words · {likes.length} likes</div>
           <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
             <FollowButton authorId={m.author_id} size="sm" />
             <TipJar authorId={m.author_id} manuscriptId={m.id} authorName={(m as any).profiles?.pen_name ?? "the author"} />
           </div>
+          <div className="mt-3"><ReportButton manuscriptId={m.id} /></div>
         </div>
 
         <article className="mt-10 space-y-10 font-serif text-[17px] leading-relaxed">
@@ -132,12 +161,7 @@ function Read() {
             <Link to="/auth" className="mt-3 block text-sm text-primary">Sign in to comment</Link>
           )}
           <ul className="mt-5 space-y-3">
-            {comments.map((c: any) => (
-              <li key={c.id} className="paper-card p-3">
-                <div className="text-xs font-medium">{c.profiles?.pen_name ?? "Reader"}</div>
-                <p className="mt-1 text-sm text-foreground/85">{c.body}</p>
-              </li>
-            ))}
+            {comments.map((c: any) => <CommentItem key={c.id} comment={c} />)}
             {comments.length === 0 && <p className="text-sm text-muted-foreground">No comments yet.</p>}
           </ul>
         </section>
