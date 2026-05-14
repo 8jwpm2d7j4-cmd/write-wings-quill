@@ -8,12 +8,15 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, Copy, Download, ExternalLink, Globe, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { buildEpub } from "@/lib/epub";
+import { useSubscription } from "@/hooks/useSubscription";
+import { SubscribeButton } from "@/components/SubscribeButton";
 
 export const Route = createFileRoute("/publish/$id")({ component: () => <AppShell><Publish /></AppShell> });
 
 function Publish() {
   const { id } = Route.useParams();
   const { user } = useAuth();
+  const { isPro } = useSubscription();
 
   const { data: manuscript, refetch } = useQuery({
     queryKey: ["m", id],
