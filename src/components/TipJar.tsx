@@ -1,32 +1,31 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Heart, Loader2 } from "lucide-react";
+import { Heart } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { toast } from "sonner";
 
 export function TipJar({ authorId, manuscriptId, authorName }: { authorId: string; manuscriptId: string; authorName: string }) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
-  const { openCheckout, loading } = usePaddleCheckout();
+  const { openCheckout, checkoutElement } = useStripeCheckout();
 
-  const tip = async (priceId: string, cents: number) => {
+  const tip = (priceId: string, label: string) => {
     if (!user) { toast.error("Sign in to tip"); return; }
     if (user.id === authorId) { toast.error("You can't tip yourself"); return; }
-    await openCheckout({
+    setOpen(false);
+    openCheckout({
       priceId,
       customerEmail: user.email,
-      customData: {
-        userId: user.id,
+      userId: user.id,
+      metadata: {
         kind: "tip",
         toUserId: authorId,
         manuscriptId,
-        amountCents: String(cents),
       },
-      successUrl: `${window.location.origin}/checkout/success?kind=tip`,
+      title: `Tip ${authorName} — ${label}`,
     });
-    setOpen(false);
   };
 
   return (
@@ -42,17 +41,22 @@ export function TipJar({ authorId, manuscriptId, authorName }: { authorId: strin
           <p className="text-sm text-muted-foreground">A small thanks goes a long way.</p>
           <div className="mt-4 grid grid-cols-3 gap-2">
             {[
-              { id: "tip_3", label: "$3", c: 300 },
-              { id: "tip_5", label: "$5", c: 500 },
-              { id: "tip_10", label: "$10", c: 1000 },
+              { id: "tip_3", label: "$3" },
+              { id: "tip_5", label: "$5" },
+              { id: "tip_10", label: "$10" },
             ].map((t) => (
-              <Button key={t.id} disabled={loading} onClick={() => tip(t.id, t.c)} className="rounded-full h-12 font-serif text-lg">
-                {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : t.label}
+              <Button
+                key={t.id}
+                onClick={() => tip(t.id, t.label)}
+                className="rounded-full h-12 font-serif text-lg"
+              >
+                {t.label}
               </Button>
             ))}
           </div>
         </DialogContent>
       </Dialog>
+      {checkoutElement}
     </>
   );
 }
