@@ -72,13 +72,14 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
       mode: isRecurring ? "subscription" : "payment",
       ui_mode: "embedded_page",
       return_url: data.returnUrl,
-      managed_payments: { enabled: true },
       ...(customerId && { customer: customerId }),
       ...(Object.keys(mergedMetadata).length > 0 && { metadata: mergedMetadata }),
       ...(isRecurring && data.userId && {
         subscription_data: { metadata: { userId: data.userId } },
       }),
-    });
+      // managed_payments is a newer API field not yet typed in the pinned SDK version
+      managed_payments: { enabled: true },
+    } as any);
 
     return session.client_secret;
   });
