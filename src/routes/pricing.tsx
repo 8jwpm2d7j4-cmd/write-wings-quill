@@ -83,7 +83,7 @@ function PricingPage() {
       </div>
 
       <p className="mt-8 text-center text-xs text-muted-foreground">
-        Payments are processed by Paddle, our Merchant of Record.
+        Secure payments — taxes and receipts handled for you.
       </p>
 
       <footer className="mt-16 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs text-muted-foreground">
