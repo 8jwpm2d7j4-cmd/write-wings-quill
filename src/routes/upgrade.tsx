@@ -6,11 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Check, Crown, ArrowLeft, Loader2, ExternalLink } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useSubscription } from "@/hooks/useSubscription";
-import { SubscribeButton } from "@/components/SubscribeButton";
 import { createPortalSession } from "@/lib/portal.functions";
-import { getPaddleEnvironment } from "@/lib/paddle";
+import { getStripeEnvironment } from "@/lib/stripe";
+import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { toast } from "sonner";
-import { usePaddleCheckout } from "@/hooks/usePaddleCheckout";
 
 export const Route = createFileRoute("/upgrade")({
   head: () => ({
@@ -38,22 +37,22 @@ function Upgrade() {
   const openPortal = useServerFn(createPortalSession);
   const [portalLoading, setPortalLoading] = useState(false);
   const [yearly, setYearly] = useState(false);
-  const { openCheckout, loading: coLoading } = usePaddleCheckout();
+  const { openCheckout, checkoutElement } = useStripeCheckout();
 
-  const subscribeYearly = async () => {
+  const subscribe = () => {
     if (!user) return;
-    await openCheckout({
-      priceId: "quill_pro_yearly",
+    openCheckout({
+      priceId: yearly ? "quill_pro_yearly" : "quill_pro_monthly",
       customerEmail: user.email,
-      customData: { userId: user.id },
-      successUrl: `${window.location.origin}/checkout/success`,
+      userId: user.id,
+      title: yearly ? "Quill Pro — Yearly" : "Quill Pro — Monthly",
     });
   };
 
   const manage = async () => {
     setPortalLoading(true);
     try {
-      const { url } = await openPortal({ data: { environment: getPaddleEnvironment() } });
+      const { url } = await openPortal({ data: { environment: getStripeEnvironment() } });
       window.open(url, "_blank");
     } catch (e: any) {
       toast.error(e?.message || "Could not open portal");
@@ -110,12 +109,11 @@ function Upgrade() {
                 Manage subscription
               </Button>
             </div>
-          ) : yearly ? (
-            <Button onClick={subscribeYearly} disabled={coLoading || !user} className="w-full rounded-full">
-              <Crown className="mr-2 h-4 w-4" />{user ? "Upgrade — $60/yr" : "Sign in to upgrade"}
-            </Button>
           ) : (
-            <SubscribeButton className="w-full rounded-full" label={user ? "Upgrade to Pro" : "Sign in to upgrade"} />
+            <Button onClick={subscribe} disabled={!user} className="w-full rounded-full">
+              <Crown className="mr-2 h-4 w-4" />
+              {user ? `Upgrade — ${yearly ? "$60/yr" : "$6/mo"}` : "Sign in to upgrade"}
+            </Button>
           )}
         </div>
 
@@ -123,6 +121,7 @@ function Upgrade() {
           Cancel anytime. Pro access continues until the end of your billing period.
         </p>
       </div>
+      {checkoutElement}
     </div>
   );
 }

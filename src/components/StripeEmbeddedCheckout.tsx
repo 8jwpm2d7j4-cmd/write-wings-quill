@@ -1,0 +1,45 @@
+import { EmbeddedCheckoutProvider, EmbeddedCheckout } from "@stripe/react-stripe-js";
+import { getStripe, getStripeEnvironment } from "@/lib/stripe";
+import { createCheckoutSession } from "@/utils/payments.functions";
+
+interface StripeEmbeddedCheckoutProps {
+  priceId: string;
+  quantity?: number;
+  customerEmail?: string;
+  userId?: string;
+  returnUrl?: string;
+  metadata?: Record<string, string>;
+}
+
+export function StripeEmbeddedCheckoutPanel({
+  priceId,
+  quantity,
+  customerEmail,
+  userId,
+  returnUrl,
+  metadata,
+}: StripeEmbeddedCheckoutProps) {
+  const fetchClientSecret = async (): Promise<string> => {
+    const secret = await createCheckoutSession({
+      data: {
+        priceId,
+        quantity,
+        customerEmail,
+        userId,
+        metadata,
+        returnUrl: returnUrl || `${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
+        environment: getStripeEnvironment(),
+      },
+    });
+    if (!secret) throw new Error("Stripe did not return a client secret");
+    return secret;
+  };
+
+  return (
+    <div id="checkout" className="min-h-[420px]">
+      <EmbeddedCheckoutProvider stripe={getStripe()} options={{ fetchClientSecret }}>
+        <EmbeddedCheckout />
+      </EmbeddedCheckoutProvider>
+    </div>
+  );
+}

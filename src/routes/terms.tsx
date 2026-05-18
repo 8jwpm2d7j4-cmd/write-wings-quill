@@ -63,11 +63,10 @@ function TermsPage() {
 
       <h2>7. Payments and subscriptions</h2>
       <p>
-        Our order process is conducted by our online reseller <strong>Paddle.com</strong>. Paddle.com
-        is the Merchant of Record for all our orders. Paddle provides all customer service inquiries
-        and handles returns. Billing, taxes, renewals, cancellations, and refunds are governed by the{" "}
-        <a href="https://www.paddle.com/legal/checkout-buyer-terms" target="_blank" rel="noreferrer">
-          Paddle Buyer Terms
+        Payments are processed by <strong>Stripe</strong>. Billing, taxes, renewals, cancellations,
+        and refunds are governed by the{" "}
+        <a href="https://stripe.com/legal/consumer" target="_blank" rel="noreferrer">
+          Stripe Services Consumer Terms
         </a>{" "}
         and our <Link to="/refund-policy">Refund Policy</Link>.
       </p>

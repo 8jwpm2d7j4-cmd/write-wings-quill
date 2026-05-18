@@ -113,7 +113,7 @@ export type Database = {
           created_at: string
           environment: string
           id: string
-          paddle_transaction_id: string | null
+          stripe_session_id: string | null
           user_id: string
         }
         Insert: {
@@ -122,7 +122,7 @@ export type Database = {
           created_at?: string
           environment?: string
           id?: string
-          paddle_transaction_id?: string | null
+          stripe_session_id?: string | null
           user_id: string
         }
         Update: {
@@ -131,7 +131,7 @@ export type Database = {
           created_at?: string
           environment?: string
           id?: string
-          paddle_transaction_id?: string | null
+          stripe_session_id?: string | null
           user_id?: string
         }
         Relationships: []
@@ -708,11 +708,11 @@ export type Database = {
           current_period_start: string | null
           environment: string
           id: string
-          paddle_customer_id: string
-          paddle_subscription_id: string
           price_id: string
           product_id: string
           status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
           updated_at: string | null
           user_id: string
         }
@@ -723,11 +723,11 @@ export type Database = {
           current_period_start?: string | null
           environment?: string
           id?: string
-          paddle_customer_id: string
-          paddle_subscription_id: string
           price_id: string
           product_id: string
           status?: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
           updated_at?: string | null
           user_id: string
         }
@@ -738,11 +738,11 @@ export type Database = {
           current_period_start?: string | null
           environment?: string
           id?: string
-          paddle_customer_id?: string
-          paddle_subscription_id?: string
           price_id?: string
           product_id?: string
           status?: string
+          stripe_customer_id?: string
+          stripe_subscription_id?: string
           updated_at?: string | null
           user_id?: string
         }
@@ -756,7 +756,7 @@ export type Database = {
           from_user_id: string
           id: string
           manuscript_id: string | null
-          paddle_transaction_id: string | null
+          stripe_session_id: string | null
           to_user_id: string
         }
         Insert: {
@@ -766,7 +766,7 @@ export type Database = {
           from_user_id: string
           id?: string
           manuscript_id?: string | null
-          paddle_transaction_id?: string | null
+          stripe_session_id?: string | null
           to_user_id: string
         }
         Update: {
@@ -776,7 +776,7 @@ export type Database = {
           from_user_id?: string
           id?: string
           manuscript_id?: string | null
-          paddle_transaction_id?: string | null
+          stripe_session_id?: string | null
           to_user_id?: string
         }
         Relationships: []
