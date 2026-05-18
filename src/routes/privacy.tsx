@@ -29,7 +29,7 @@ function PrivacyPage() {
         <li><strong>Profile and content:</strong> bios, manuscripts, chapters, comments, reactions, follows.</li>
         <li><strong>Usage data:</strong> reading progress, streaks, device and browser information, IP address, log data.</li>
         <li><strong>Support data:</strong> messages you send us.</li>
-        <li><strong>Payment metadata:</strong> subscription status and identifiers returned from Paddle. Card details are collected and stored by Paddle, not by us.</li>
+        <li><strong>Payment metadata:</strong> subscription status and identifiers returned from our payment processor. Card details are collected and stored by the payment processor, not by us.</li>
       </ul>
 
       <h2>3. Why we process it</h2>
@@ -46,7 +46,7 @@ function PrivacyPage() {
       <h2>4. Who we share it with</h2>
       <ul>
         <li><strong>Service providers / subprocessors:</strong> hosting, database, analytics, email, AI inference, and customer-support tools.</li>
-        <li><strong>Paddle</strong> as our Merchant of Record for sale of subscriptions, payment processing, subscription management, tax compliance, and invoicing.</li>
+        <li><strong>Stripe</strong> for payment processing, subscription management, tax compliance, fraud prevention, and invoicing.</li>
         <li><strong>Professional advisers</strong> (legal, accounting) where necessary.</li>
         <li><strong>Authorities</strong> where required by law.</li>
       </ul>
