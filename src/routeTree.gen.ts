@@ -34,7 +34,6 @@ import { Route as ReadIdRouteImport } from './routes/read.$id'
 import { Route as PublishIdRouteImport } from './routes/publish.$id'
 import { Route as EmbedIdRouteImport } from './routes/embed.$id'
 import { Route as CoverIdRouteImport } from './routes/cover.$id'
-import { Route as CheckoutSuccessRouteImport } from './routes/checkout.success'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout/return'
 import { Route as BookSlugRouteImport } from './routes/book.$slug'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
@@ -164,11 +163,6 @@ const CoverIdRoute = CoverIdRouteImport.update({
   path: '/cover/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CheckoutSuccessRoute = CheckoutSuccessRouteImport.update({
-  id: '/checkout/success',
-  path: '/checkout/success',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CheckoutReturnRoute = CheckoutReturnRouteImport.update({
   id: '/checkout/return',
   path: '/checkout/return',
@@ -208,7 +202,6 @@ export interface FileRoutesByFullPath {
   '/upgrade': typeof UpgradeRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
-  '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/embed/$id': typeof EmbedIdRoute
   '/publish/$id': typeof PublishIdRoute
@@ -239,7 +232,6 @@ export interface FileRoutesByTo {
   '/upgrade': typeof UpgradeRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
-  '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/embed/$id': typeof EmbedIdRoute
   '/publish/$id': typeof PublishIdRoute
@@ -271,7 +263,6 @@ export interface FileRoutesById {
   '/upgrade': typeof UpgradeRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
-  '/checkout/success': typeof CheckoutSuccessRoute
   '/cover/$id': typeof CoverIdRoute
   '/embed/$id': typeof EmbedIdRoute
   '/publish/$id': typeof PublishIdRoute
@@ -304,7 +295,6 @@ export interface FileRouteTypes {
     | '/upgrade'
     | '/book/$slug'
     | '/checkout/return'
-    | '/checkout/success'
     | '/cover/$id'
     | '/embed/$id'
     | '/publish/$id'
@@ -335,7 +325,6 @@ export interface FileRouteTypes {
     | '/upgrade'
     | '/book/$slug'
     | '/checkout/return'
-    | '/checkout/success'
     | '/cover/$id'
     | '/embed/$id'
     | '/publish/$id'
@@ -366,7 +355,6 @@ export interface FileRouteTypes {
     | '/upgrade'
     | '/book/$slug'
     | '/checkout/return'
-    | '/checkout/success'
     | '/cover/$id'
     | '/embed/$id'
     | '/publish/$id'
@@ -398,7 +386,6 @@ export interface RootRouteChildren {
   UpgradeRoute: typeof UpgradeRoute
   BookSlugRoute: typeof BookSlugRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
-  CheckoutSuccessRoute: typeof CheckoutSuccessRoute
   CoverIdRoute: typeof CoverIdRoute
   EmbedIdRoute: typeof EmbedIdRoute
   PublishIdRoute: typeof PublishIdRoute
@@ -585,13 +572,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoverIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/checkout/success': {
-      id: '/checkout/success'
-      path: '/checkout/success'
-      fullPath: '/checkout/success'
-      preLoaderRoute: typeof CheckoutSuccessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/checkout/return': {
       id: '/checkout/return'
       path: '/checkout/return'
@@ -638,7 +618,6 @@ const rootRouteChildren: RootRouteChildren = {
   UpgradeRoute: UpgradeRoute,
   BookSlugRoute: BookSlugRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
-  CheckoutSuccessRoute: CheckoutSuccessRoute,
   CoverIdRoute: CoverIdRoute,
   EmbedIdRoute: EmbedIdRoute,
   PublishIdRoute: PublishIdRoute,
