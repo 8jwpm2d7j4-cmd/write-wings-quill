@@ -15,8 +15,9 @@ export function PaidChapterGate({ chapterId, chapterTitle, priceCents }: { chapt
   const { openCheckout, checkoutElement } = useStripeCheckout();
   const priceId = PRICE_FOR_CENTS[priceCents] ?? "chapter_unlock_99";
 
-  const buy = () => {
+  const buy = ({ authorId }: { authorId?: string } = {}) => {
     if (!user) { toast.error("Sign in to unlock"); return; }
+    if (authorId && authorId === user.id) { toast.error("You're the author — you already have access."); return; }
     openCheckout({
       priceId,
       customerEmail: user.email,

@@ -5,7 +5,7 @@ import { generateText } from "ai";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { userIsPro } from "@/lib/membership.server";
 
-const FREE_DAILY_ASSISTS = 5;
+const FREE_DAILY_ASSISTS = 10;
 
 const assistInput = z.object({
   mode: z.enum(["continue", "rewrite", "improve", "brainstorm", "outline"]),
