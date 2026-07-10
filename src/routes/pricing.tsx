@@ -77,8 +77,8 @@ function PricingPage() {
               </li>
             ))}
           </ul>
-          <Link to="/auth" className="mt-6 block">
-            <Button className="w-full rounded-full"><Crown className="mr-2 h-4 w-4" /> Get Quill Pro</Button>
+          <Link to={proDest} className="mt-6 block">
+            <Button className="w-full rounded-full"><Crown className="mr-2 h-4 w-4" /> {user ? "Upgrade to Pro" : "Get Quill Pro"}</Button>
           </Link>
           <p className="mt-3 text-[11px] text-muted-foreground text-center">
             Cancel anytime. 30-day money-back guarantee.
