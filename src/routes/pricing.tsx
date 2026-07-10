@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Check, Crown, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/pricing")({
   head: () => ({
@@ -23,8 +24,11 @@ const FEATURES = [
 ];
 
 function PricingPage() {
+  const { user } = useAuth();
+  const proDest = user ? "/upgrade" : "/auth";
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
+
       <header className="flex items-center justify-between">
         <Link to="/" className="inline-flex items-center gap-2 font-serif text-xl">
           <BookOpen className="h-5 w-5" /> Quill
@@ -73,8 +77,8 @@ function PricingPage() {
               </li>
             ))}
           </ul>
-          <Link to="/auth" className="mt-6 block">
-            <Button className="w-full rounded-full"><Crown className="mr-2 h-4 w-4" /> Get Quill Pro</Button>
+          <Link to={proDest} className="mt-6 block">
+            <Button className="w-full rounded-full"><Crown className="mr-2 h-4 w-4" /> {user ? "Upgrade to Pro" : "Get Quill Pro"}</Button>
           </Link>
           <p className="mt-3 text-[11px] text-muted-foreground text-center">
             Cancel anytime. 30-day money-back guarantee.

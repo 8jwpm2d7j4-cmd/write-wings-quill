@@ -476,39 +476,6 @@ export type Database = {
           },
         ]
       }
-      memberships: {
-        Row: {
-          active: boolean
-          provider: string | null
-          provider_customer_id: string | null
-          renews_at: string | null
-          started_at: string
-          tier: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          active?: boolean
-          provider?: string | null
-          provider_customer_id?: string | null
-          renews_at?: string | null
-          started_at?: string
-          tier?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          active?: boolean
-          provider?: string | null
-          provider_customer_id?: string | null
-          renews_at?: string | null
-          started_at?: string
-          tier?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       notes: {
         Row: {
           body: string

@@ -10,13 +10,14 @@ const PRICE_FOR_CENTS: Record<number, string> = {
   299: "chapter_unlock_299",
 };
 
-export function PaidChapterGate({ chapterId, chapterTitle, priceCents }: { chapterId: string; chapterTitle: string; priceCents: number }) {
+export function PaidChapterGate({ chapterId, chapterTitle, priceCents, authorId }: { chapterId: string; chapterTitle: string; priceCents: number; authorId?: string }) {
   const { user } = useAuth();
   const { openCheckout, checkoutElement } = useStripeCheckout();
   const priceId = PRICE_FOR_CENTS[priceCents] ?? "chapter_unlock_99";
 
   const buy = () => {
     if (!user) { toast.error("Sign in to unlock"); return; }
+    if (authorId && authorId === user.id) { toast.error("You're the author — you already have access."); return; }
     openCheckout({
       priceId,
       customerEmail: user.email,
