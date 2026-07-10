@@ -37,6 +37,23 @@ export function createStripeClient(env: StripeEnv): Stripe {
   });
 }
 
+export function getStripeErrorMessage(error: unknown): string {
+  if (error && typeof error === 'object') {
+    const e = error as any;
+    const message = e.raw?.message ?? e.message;
+    if (message) {
+      const details = [
+        e.raw?.type ?? e.type,
+        e.raw?.code ?? e.code,
+        e.raw?.decline_code ?? e.decline_code,
+        e.raw?.param ?? e.param,
+      ].filter(Boolean);
+      return details.length ? `${message} (${details.join(', ')})` : message;
+    }
+  }
+  return 'Stripe request failed';
+}
+
 export async function verifyWebhook(req: Request, env: StripeEnv): Promise<{ type: string; data: { object: any } }> {
   const signature = req.headers.get('stripe-signature');
   const body = await req.text();

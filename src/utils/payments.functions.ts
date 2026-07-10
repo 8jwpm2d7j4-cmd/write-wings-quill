@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
-import { type StripeEnv, createStripeClient } from "@/lib/stripe.server";
+import { type StripeEnv, createStripeClient, getStripeErrorMessage } from "@/lib/stripe.server";
+
+type CheckoutResult = { clientSecret: string } | { error: string };
 
 async function resolveOrCreateCustomer(
   stripe: ReturnType<typeof createStripeClient>,
@@ -47,39 +49,57 @@ export const createCheckoutSession = createServerFn({ method: "POST" })
     if (!/^[a-zA-Z0-9_-]+$/.test(data.priceId)) throw new Error("Invalid priceId");
     return data;
   })
-  .handler(async ({ data }) => {
-    const stripe = createStripeClient(data.environment);
+  .handler(async ({ data }): Promise<CheckoutResult> => {
+    try {
+      const stripe = createStripeClient(data.environment);
 
-    const prices = await stripe.prices.list({ lookup_keys: [data.priceId] });
-    if (!prices.data.length) throw new Error("Price not found");
-    const stripePrice = prices.data[0];
-    const isRecurring = stripePrice.type === "recurring";
+      const prices = await stripe.prices.list({ lookup_keys: [data.priceId] });
+      if (!prices.data.length) throw new Error("Price not found");
+      const stripePrice = prices.data[0];
+      const isRecurring = stripePrice.type === "recurring";
 
-    const customerId = (data.customerEmail || data.userId)
-      ? await resolveOrCreateCustomer(stripe, {
-          email: data.customerEmail,
-          userId: data.userId,
-        })
-      : undefined;
+      const customerId = (data.customerEmail || data.userId)
+        ? await resolveOrCreateCustomer(stripe, {
+            email: data.customerEmail,
+            userId: data.userId,
+          })
+        : undefined;
 
-    const mergedMetadata: Record<string, string> = {
-      ...(data.userId ? { userId: data.userId } : {}),
-      ...(data.metadata ?? {}),
-    };
+      // Resolve product name for one-off dashboard descriptions.
+      let productDescription: string | undefined;
+      if (!isRecurring) {
+        const productId = typeof stripePrice.product === "string"
+          ? stripePrice.product
+          : (stripePrice.product as any).id;
+        const product = await stripe.products.retrieve(productId);
+        productDescription = product.name;
+      }
 
-    const session = await stripe.checkout.sessions.create({
-      line_items: [{ price: stripePrice.id, quantity: data.quantity || 1 }],
-      mode: isRecurring ? "subscription" : "payment",
-      ui_mode: "embedded_page",
-      return_url: data.returnUrl,
-      ...(customerId && { customer: customerId }),
-      ...(Object.keys(mergedMetadata).length > 0 && { metadata: mergedMetadata }),
-      ...(isRecurring && data.userId && {
-        subscription_data: { metadata: { userId: data.userId } },
-      }),
-      // managed_payments is a newer API field not yet typed in the pinned SDK version
-      managed_payments: { enabled: true },
-    } as any);
+      const mergedMetadata: Record<string, string> = {
+        ...(data.userId ? { userId: data.userId } : {}),
+        ...(data.metadata ?? {}),
+        managed_payments: "true",
+      };
 
-    return session.client_secret;
+      const session = await stripe.checkout.sessions.create({
+        line_items: [{ price: stripePrice.id, quantity: data.quantity || 1 }],
+        mode: isRecurring ? "subscription" : "payment",
+        ui_mode: "embedded_page",
+        return_url: data.returnUrl,
+        ...(customerId && { customer: customerId }),
+        ...(!isRecurring && productDescription && {
+          payment_intent_data: { description: productDescription },
+        }),
+        ...(Object.keys(mergedMetadata).length > 0 && { metadata: mergedMetadata }),
+        ...(isRecurring && data.userId && {
+          subscription_data: { metadata: { userId: data.userId } },
+        }),
+        // End-to-end tax/compliance handling by Stripe (+3.5% per txn).
+        managed_payments: { enabled: true },
+      } as any);
+
+      return { clientSecret: session.client_secret ?? "" };
+    } catch (error) {
+      return { error: getStripeErrorMessage(error) };
+    }
   });
