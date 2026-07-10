@@ -24,8 +24,11 @@ const FEATURES = [
 ];
 
 function PricingPage() {
+  const { user } = useAuth();
+  const proDest = user ? "/upgrade" : "/auth";
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
+
       <header className="flex items-center justify-between">
         <Link to="/" className="inline-flex items-center gap-2 font-serif text-xl">
           <BookOpen className="h-5 w-5" /> Quill
