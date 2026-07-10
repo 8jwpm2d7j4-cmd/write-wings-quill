@@ -132,7 +132,11 @@ async function handleCheckoutCompleted(session: any, env: StripeEnv) {
 }
 
 async function handleInvoicePaymentFailed(invoice: any, env: StripeEnv) {
-  const subscriptionId = invoice.subscription;
+  const subscriptionId: string | undefined =
+    invoice.subscription ||
+    invoice.parent?.subscription_details?.subscription ||
+    invoice.lines?.data?.[0]?.subscription ||
+    invoice.lines?.data?.[0]?.parent?.subscription_item_details?.subscription;
   if (!subscriptionId) return;
   const { data: sub } = await getSupabase()
     .from('subscriptions')

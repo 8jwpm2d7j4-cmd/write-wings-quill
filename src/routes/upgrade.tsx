@@ -52,8 +52,9 @@ function Upgrade() {
   const manage = async () => {
     setPortalLoading(true);
     try {
-      const { url } = await openPortal({ data: { environment: getStripeEnvironment() } });
-      window.open(url, "_blank");
+      const result = await openPortal({ data: { environment: getStripeEnvironment() } });
+      if ("error" in result) throw new Error(result.error);
+      window.open(result.url, "_blank");
     } catch (e: any) {
       toast.error(e?.message || "Could not open portal");
     } finally {

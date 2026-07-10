@@ -20,7 +20,7 @@ export function StripeEmbeddedCheckoutPanel({
   metadata,
 }: StripeEmbeddedCheckoutProps) {
   const fetchClientSecret = async (): Promise<string> => {
-    const secret = await createCheckoutSession({
+    const result = await createCheckoutSession({
       data: {
         priceId,
         quantity,
@@ -31,8 +31,9 @@ export function StripeEmbeddedCheckoutPanel({
         environment: getStripeEnvironment(),
       },
     });
-    if (!secret) throw new Error("Stripe did not return a client secret");
-    return secret;
+    if ("error" in result) throw new Error(result.error);
+    if (!result.clientSecret) throw new Error("Stripe did not return a client secret");
+    return result.clientSecret;
   };
 
   return (
