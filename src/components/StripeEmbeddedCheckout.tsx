@@ -20,12 +20,12 @@ export function StripeEmbeddedCheckoutPanel({
   metadata,
 }: StripeEmbeddedCheckoutProps) {
   const fetchClientSecret = async (): Promise<string> => {
+    void customerEmail;
+    void userId;
     const result = await createCheckoutSession({
       data: {
         priceId,
         quantity,
-        customerEmail,
-        userId,
         metadata,
         returnUrl: returnUrl || `${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
         environment: getStripeEnvironment(),
