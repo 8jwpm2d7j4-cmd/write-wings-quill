@@ -53,7 +53,7 @@ export function useSubscription() {
       ]);
       if (!cancelled) {
         setSub((data as SubRow | null) ?? null);
-        setBonusUntil((prof as any)?.bonus_pro_until ?? null);
+        setBonusUntil(prof?.bonus_pro_until ?? null);
         setLoading(false);
       }
     };
@@ -64,7 +64,7 @@ export function useSubscription() {
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "subscriptions", filter: `user_id=eq.${user.id}` },
-        () => fetchSub()
+        () => fetchSub(),
       )
       .subscribe();
 

@@ -29,6 +29,7 @@ Re-run `npm run build && npx cap sync` after every web change.
 ## 3. Run on device / simulator
 
 **iOS** (macOS + Xcode required):
+
 ```bash
 npx cap run ios
 # or open the workspace:
@@ -36,6 +37,7 @@ npx cap open ios
 ```
 
 **Android** (Android Studio required):
+
 ```bash
 npx cap run android
 # or:
@@ -51,6 +53,7 @@ npx cap open android
 App Store and Play Store both require **In-App Purchases** for digital goods — Paddle subscriptions and tip checkouts will be rejected. Wrap purchases with [@capgo/capacitor-purchases](https://github.com/Cap-go/capacitor-purchases) or RevenueCat before submission, and gate them behind `Capacitor.isNativePlatform()`.
 
 You'll also need:
+
 - Apple Developer account ($99/yr) and Google Play Console ($25 one-time)
 - App icons + splash screens (drop into `ios/App/App/Assets.xcassets` and `android/app/src/main/res/`)
 - Privacy policy URL + data-safety form (we collect email, content, payments)

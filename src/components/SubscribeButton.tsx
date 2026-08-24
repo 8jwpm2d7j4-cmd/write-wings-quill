@@ -18,7 +18,10 @@ export function SubscribeButton({
   const { openCheckout, checkoutElement } = useStripeCheckout();
 
   const onClick = () => {
-    if (!user) { navigate({ to: "/auth" }); return; }
+    if (!user) {
+      navigate({ to: "/auth" });
+      return;
+    }
     openCheckout({
       priceId,
       customerEmail: user.email,

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { toast } from "sonner";
 
 const EMOJIS = ["❤️", "🔥", "😂", "😢", "🤯"];
 
@@ -10,23 +11,39 @@ export function Reactions({ chapterId }: { chapterId: string }) {
   const [mine, setMine] = useState<Set<string>>(new Set());
 
   const load = async () => {
-    const { data } = await supabase.from("reactions").select("emoji,user_id").eq("chapter_id", chapterId);
+    const { data } = await supabase
+      .from("reactions")
+      .select("emoji,user_id")
+      .eq("chapter_id", chapterId);
     const c: Record<string, number> = {};
     const m = new Set<string>();
-    (data ?? []).forEach((r: any) => {
+    (data ?? []).forEach((r) => {
       c[r.emoji] = (c[r.emoji] ?? 0) + 1;
       if (user && r.user_id === user.id) m.add(r.emoji);
     });
-    setCounts(c); setMine(m);
+    setCounts(c);
+    setMine(m);
   };
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [chapterId, user?.id]);
+  useEffect(() => {
+    load(); /* eslint-disable-next-line */
+  }, [chapterId, user?.id]);
 
   const toggle = async (emoji: string) => {
-    if (!user) return;
-    if (mine.has(emoji)) {
-      await supabase.from("reactions").delete().eq("user_id", user.id).eq("chapter_id", chapterId).eq("emoji", emoji);
-    } else {
-      await supabase.from("reactions").insert({ user_id: user.id, chapter_id: chapterId, emoji });
+    if (!user) {
+      toast.error("Sign in to react");
+      return;
+    }
+    const { error } = mine.has(emoji)
+      ? await supabase
+          .from("reactions")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("chapter_id", chapterId)
+          .eq("emoji", emoji)
+      : await supabase.from("reactions").insert({ user_id: user.id, chapter_id: chapterId, emoji });
+    if (error) {
+      toast.error("Couldn't update your reaction");
+      return;
     }
     load();
   };
@@ -42,7 +59,8 @@ export function Reactions({ chapterId }: { chapterId: string }) {
             onClick={() => toggle(e)}
             className={`px-2.5 py-1 rounded-full text-sm border transition ${active ? "bg-primary/15 border-primary" : "border-border hover:bg-accent"}`}
           >
-            <span>{e}</span>{n > 0 && <span className="ml-1 text-xs text-muted-foreground">{n}</span>}
+            <span>{e}</span>
+            {n > 0 && <span className="ml-1 text-xs text-muted-foreground">{n}</span>}
           </button>
         );
       })}

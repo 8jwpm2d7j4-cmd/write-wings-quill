@@ -7,13 +7,27 @@ import { toast } from "sonner";
 import { awardIfNew } from "@/lib/achievements";
 import { notify } from "@/lib/notify";
 
-export function FollowButton({ authorId, size = "default" }: { authorId: string; size?: "sm" | "default" }) {
+export function FollowButton({
+  authorId,
+  size = "default",
+}: {
+  authorId: string;
+  size?: "sm" | "default";
+}) {
   const { user } = useAuth();
   const [following, setFollowing] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (!user || user.id === authorId) { setFollowing(false); return; }
-    supabase.from("follows").select("follower_id").eq("follower_id", user.id).eq("following_id", authorId).maybeSingle()
+    if (!user || user.id === authorId) {
+      setFollowing(false);
+      return;
+    }
+    supabase
+      .from("follows")
+      .select("follower_id")
+      .eq("follower_id", user.id)
+      .eq("following_id", authorId)
+      .maybeSingle()
       .then(({ data }) => setFollowing(!!data));
   }, [user, authorId]);
 
@@ -22,21 +36,52 @@ export function FollowButton({ authorId, size = "default" }: { authorId: string;
   const toggle = async () => {
     if (!user) return;
     if (following) {
-      await supabase.from("follows").delete().eq("follower_id", user.id).eq("following_id", authorId);
+      const { error } = await supabase
+        .from("follows")
+        .delete()
+        .eq("follower_id", user.id)
+        .eq("following_id", authorId);
+      if (error) {
+        toast.error("Couldn't unfollow this author");
+        return;
+      }
       setFollowing(false);
     } else {
-      const { error } = await supabase.from("follows").insert({ follower_id: user.id, following_id: authorId });
-      if (error) { toast.error(error.message); return; }
+      const { error } = await supabase
+        .from("follows")
+        .insert({ follower_id: user.id, following_id: authorId });
+      if (error) {
+        toast.error(error.message);
+        return;
+      }
       setFollowing(true);
       // Award the followed author the "first follower" badge if applicable
       awardIfNew(authorId, "first_follower").catch(() => {});
-      notify({ userId: authorId, actorId: user.id, kind: "follow", message: "You have a new follower" }).catch(() => {});
+      notify({
+        userId: authorId,
+        actorId: user.id,
+        kind: "follow",
+        message: "You have a new follower",
+      }).catch(() => {});
     }
   };
 
   return (
-    <Button size={size} onClick={toggle} variant={following ? "outline" : "default"} className="rounded-full">
-      {following ? <><UserCheck className="mr-1.5 h-4 w-4" /> Following</> : <><UserPlus className="mr-1.5 h-4 w-4" /> Follow</>}
+    <Button
+      size={size}
+      onClick={toggle}
+      variant={following ? "outline" : "default"}
+      className="rounded-full"
+    >
+      {following ? (
+        <>
+          <UserCheck className="mr-1.5 h-4 w-4" /> Following
+        </>
+      ) : (
+        <>
+          <UserPlus className="mr-1.5 h-4 w-4" /> Follow
+        </>
+      )}
     </Button>
   );
 }

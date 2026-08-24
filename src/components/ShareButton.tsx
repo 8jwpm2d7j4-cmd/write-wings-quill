@@ -12,10 +12,16 @@ export function ShareButton({ title, url, text }: { title: string; url?: string;
         await navigator.clipboard.writeText(shareUrl);
         toast.success("Link copied");
       }
-    } catch {/* user dismissed */}
+    } catch {
+      /* user dismissed */
+    }
   };
   return (
-    <button onClick={share} className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent" title="Share">
+    <button
+      onClick={share}
+      className="grid h-9 w-9 place-items-center rounded-full hover:bg-accent"
+      title="Share"
+    >
       <Share2 className="h-5 w-5" />
     </button>
   );

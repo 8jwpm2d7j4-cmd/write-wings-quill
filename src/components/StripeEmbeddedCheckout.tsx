@@ -27,7 +27,8 @@ export function StripeEmbeddedCheckoutPanel({
         priceId,
         quantity,
         metadata,
-        returnUrl: returnUrl || `${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
+        returnUrl:
+          returnUrl || `${window.location.origin}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
         environment: getStripeEnvironment(),
       },
     });

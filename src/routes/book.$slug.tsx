@@ -19,13 +19,23 @@ function BookLanding() {
   const { data: m, isLoading } = useQuery({
     queryKey: ["book-slug", slug],
     queryFn: async () =>
-      (await supabase.from("manuscripts").select("*, profiles(pen_name,avatar_url)").eq("slug", slug).eq("status", "published").maybeSingle()).data,
+      (
+        await supabase
+          .from("manuscripts")
+          .select("*, profiles(pen_name,avatar_url)")
+          .eq("slug", slug)
+          .eq("status", "published")
+          .maybeSingle()
+      ).data,
   });
 
-  if (isLoading) return <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>;
+  if (isLoading)
+    return (
+      <div className="grid min-h-screen place-items-center text-muted-foreground">Loading…</div>
+    );
   if (!m) return <Navigate to="/discover" />;
 
-  const author = (m as any).profiles?.pen_name ?? "Anonymous";
+  const author = m.profiles?.pen_name ?? "Anonymous";
 
   return (
     <div className="mx-auto max-w-md min-h-screen px-5 pt-12 pb-16">
@@ -35,13 +45,26 @@ function BookLanding() {
             <img src={m.cover_url} alt={m.title} className="h-full w-full object-cover" />
           </div>
         )}
-        <div className="mt-6 text-[10px] uppercase tracking-widest text-muted-foreground">{m.genre || "Fiction"}</div>
+        <div className="mt-6 text-[10px] uppercase tracking-widest text-muted-foreground">
+          {m.genre || "Fiction"}
+        </div>
         <h1 className="mt-1 font-serif text-3xl">{m.title}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">by <Link to="/u/$penName" params={{ penName: author }} className="underline">{author}</Link></p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          by{" "}
+          <Link to="/u/$penName" params={{ penName: author }} className="underline">
+            {author}
+          </Link>
+        </p>
         {m.synopsis && <p className="mt-5 text-sm text-foreground/80 text-left">{m.synopsis}</p>}
-        <div className="mt-3 text-xs text-muted-foreground">{m.word_count.toLocaleString()} words</div>
+        <div className="mt-3 text-xs text-muted-foreground">
+          {m.word_count.toLocaleString()} words
+        </div>
 
-        <Link to="/read/$id" params={{ id: m.id }} className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3 font-medium">
+        <Link
+          to="/read/$id"
+          params={{ id: m.id }}
+          className="mt-7 inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-6 py-3 font-medium"
+        >
           Start reading <ArrowRight className="h-4 w-4" />
         </Link>
       </div>

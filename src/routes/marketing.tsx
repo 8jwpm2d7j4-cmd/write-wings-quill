@@ -3,7 +3,18 @@ import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Copy, Download, Share2, Twitter, Instagram, Facebook, Linkedin, Check } from "lucide-react";
+import {
+  ArrowLeft,
+  Copy,
+  Download,
+  Share2,
+  Twitter,
+  Instagram,
+  Facebook,
+  Linkedin,
+  Check,
+  type LucideIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 import heroImg from "@/assets/marketing-hero.jpg";
 import post1 from "@/assets/social-post-1.jpg";
@@ -12,11 +23,18 @@ import promoVideo from "@/assets/promo-video.mp4.asset.json";
 import { SignupCounter } from "@/components/SignupCounter";
 
 export const Route = createFileRoute("/marketing")({
-  component: () => <AppShell><Marketing /></AppShell>,
+  component: () => (
+    <AppShell>
+      <Marketing />
+    </AppShell>
+  ),
   head: () => ({
     meta: [
       { title: "Share Quill — Marketing kit" },
-      { name: "description", content: "Posters, captions, and a promo video to help spread the word about Quill." },
+      {
+        name: "description",
+        content: "Posters, captions, and a promo video to help spread the word about Quill.",
+      },
     ],
   }),
 });
@@ -26,22 +44,31 @@ const SITE = typeof window !== "undefined" ? window.location.origin : "https://q
 const CAPTIONS = [
   {
     title: "The Hook",
-    body: "I've been writing my novel on Quill — it's the first app that actually feels like a writing studio in your pocket. AI co-writer, cover generator, and you can publish straight to Kindle. ✦ try it: " + SITE,
+    body:
+      "I've been writing my novel on Quill — it's the first app that actually feels like a writing studio in your pocket. AI co-writer, cover generator, and you can publish straight to Kindle. ✦ try it: " +
+      SITE,
     hashtags: "#WritingCommunity #AmWriting #IndieAuthor #SelfPublishing #BookTok",
   },
   {
     title: "The Story",
-    body: "365 days. 1 chapter at a time. Quill gives you streaks, daily goals, and an AI that actually sounds like you. Your story deserves to be told. → " + SITE,
+    body:
+      "365 days. 1 chapter at a time. Quill gives you streaks, daily goals, and an AI that actually sounds like you. Your story deserves to be told. → " +
+      SITE,
     hashtags: "#WritersOfInstagram #WritingGoals #NovelWriting #AuthorLife",
   },
   {
     title: "The Pitch",
-    body: "Stop waiting for permission to be a writer. Quill: AI co-writer, AI book covers, EPUB export, Kindle publishing — $6/mo. Your first chapter is one tap away. " + SITE,
+    body:
+      "Stop waiting for permission to be a writer. Quill: AI co-writer, AI book covers, EPUB export, Kindle publishing — $6/mo. Your first chapter is one tap away. " +
+      SITE,
     hashtags: "#IndieAuthor #WritingApp #BookLovers #Authors #WritingTips",
   },
   {
     title: "Reader Pitch",
-    body: "Discovered the most beautiful reading app — Quill. Indie authors publishing chapters in real time, you can tip them directly, and the typography is *chef's kiss*. " + SITE + "/discover",
+    body:
+      "Discovered the most beautiful reading app — Quill. Indie authors publishing chapters in real time, you can tip them directly, and the typography is *chef's kiss*. " +
+      SITE +
+      "/discover",
     hashtags: "#BookTok #Bookstagram #Reading #IndieBooks #AmReading",
   },
 ];
@@ -53,8 +80,12 @@ function Marketing() {
         <ArrowLeft className="h-4 w-4" /> Profile
       </Link>
       <h1 className="mt-2 font-serif text-3xl">Share Quill</h1>
-      <p className="mt-1 text-sm text-muted-foreground">Posters, captions, and a 5-second promo video — ready to post.</p>
-      <div className="mt-3"><SignupCounter /></div>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Posters, captions, and a 5-second promo video — ready to post.
+      </p>
+      <div className="mt-3">
+        <SignupCounter />
+      </div>
 
       {/* Promo video */}
       <section className="mt-6">
@@ -62,13 +93,20 @@ function Marketing() {
         <div className="mt-3 paper-card overflow-hidden">
           <video
             src={(promoVideo as { url: string }).url}
-            autoPlay loop muted playsInline
+            autoPlay
+            loop
+            muted
+            playsInline
             className="w-full aspect-video object-cover"
           />
           <div className="p-3 flex gap-2">
-            <a href={(promoVideo as { url: string }).url} download="quill-promo.mp4"
-              className="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm">
-              <Download className="h-4 w-4" />Download MP4
+            <a
+              href={(promoVideo as { url: string }).url}
+              download="quill-promo.mp4"
+              className="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 py-2 text-sm"
+            >
+              <Download className="h-4 w-4" />
+              Download MP4
             </a>
           </div>
         </div>
@@ -93,7 +131,9 @@ function Marketing() {
       <section className="mt-8">
         <SectionLabel>Ready-to-post captions</SectionLabel>
         <div className="mt-3 space-y-3">
-          {CAPTIONS.map((c) => <CaptionCard key={c.title} {...c} />)}
+          {CAPTIONS.map((c) => (
+            <CaptionCard key={c.title} {...c} />
+          ))}
         </div>
       </section>
 
@@ -101,19 +141,41 @@ function Marketing() {
       <section className="mt-8">
         <SectionLabel>One-tap share</SectionLabel>
         <div className="mt-3 grid grid-cols-2 gap-2">
-          <ShareBtn icon={Twitter} label="Twitter / X"
-            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("I'm writing my novel on Quill ✦ " + SITE)}`} />
-          <ShareBtn icon={Facebook} label="Facebook"
-            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE)}`} />
-          <ShareBtn icon={Linkedin} label="LinkedIn"
-            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(SITE)}`} />
-          <ShareBtn icon={Instagram} label="Instagram"
-            onClick={() => { navigator.clipboard.writeText(CAPTIONS[0].body + "\n\n" + CAPTIONS[0].hashtags); toast.success("Caption copied — paste in Instagram"); }} />
+          <ShareBtn
+            icon={Twitter}
+            label="Twitter / X"
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent("I'm writing my novel on Quill ✦ " + SITE)}`}
+          />
+          <ShareBtn
+            icon={Facebook}
+            label="Facebook"
+            href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(SITE)}`}
+          />
+          <ShareBtn
+            icon={Linkedin}
+            label="LinkedIn"
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(SITE)}`}
+          />
+          <ShareBtn
+            icon={Instagram}
+            label="Instagram"
+            onClick={() => {
+              navigator.clipboard.writeText(CAPTIONS[0].body + "\n\n" + CAPTIONS[0].hashtags);
+              toast.success("Caption copied — paste in Instagram");
+            }}
+          />
           <button
             onClick={async () => {
               if (navigator.share) {
-                try { await navigator.share({ title: "Quill", text: "Write the book in you ✦", url: SITE }); }
-                catch { /* cancelled */ }
+                try {
+                  await navigator.share({
+                    title: "Quill",
+                    text: "Write the book in you ✦",
+                    url: SITE,
+                  });
+                } catch {
+                  /* cancelled */
+                }
               } else {
                 navigator.clipboard.writeText(SITE);
                 toast.success("Link copied");
@@ -121,7 +183,8 @@ function Marketing() {
             }}
             className="col-span-2 inline-flex items-center justify-center gap-2 rounded-full bg-primary text-primary-foreground px-4 py-3 text-sm font-medium"
           >
-            <Share2 className="h-4 w-4" />Share via system sheet
+            <Share2 className="h-4 w-4" />
+            Share via system sheet
           </button>
         </div>
       </section>
@@ -151,11 +214,20 @@ function PosterCard({ src, filename, small }: { src: string; filename: string; s
   const altText = filename.replace(/\.[^.]+$/, "").replace(/[-_]/g, " ");
   return (
     <div className="paper-card overflow-hidden">
-      <img src={src} alt={`Quill marketing poster: ${altText}`} className={`w-full object-cover ${small ? "aspect-square" : "aspect-video"}`} loading="lazy" />
+      <img
+        src={src}
+        alt={`Quill marketing poster: ${altText}`}
+        className={`w-full object-cover ${small ? "aspect-square" : "aspect-video"}`}
+        loading="lazy"
+      />
       <div className="p-2">
-        <a href={src} download={filename}
-          className="w-full inline-flex items-center justify-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs hover:bg-accent">
-          <Download className="h-3 w-3" />Download
+        <a
+          href={src}
+          download={filename}
+          className="w-full inline-flex items-center justify-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs hover:bg-accent"
+        >
+          <Download className="h-3 w-3" />
+          Download
         </a>
       </div>
     </div>
@@ -170,10 +242,16 @@ function CaptionCard({ title, body, hashtags }: { title: string; body: string; h
       <div className="flex items-center justify-between">
         <div className="font-serif text-sm">{title}</div>
         <button
-          onClick={() => { navigator.clipboard.writeText(full); setCopied(true); toast.success("Copied"); setTimeout(() => setCopied(false), 1500); }}
+          onClick={() => {
+            navigator.clipboard.writeText(full);
+            setCopied(true);
+            toast.success("Copied");
+            setTimeout(() => setCopied(false), 1500);
+          }}
           className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] hover:bg-accent"
         >
-          {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}{copied ? "Copied" : "Copy"}
+          {copied ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+          {copied ? "Copied" : "Copy"}
         </button>
       </div>
       <Textarea value={full} readOnly className="mt-3 min-h-[110px] text-sm bg-background/50" />
@@ -181,22 +259,42 @@ function CaptionCard({ title, body, hashtags }: { title: string; body: string; h
   );
 }
 
-function ShareBtn({ icon: Icon, label, href, onClick }: any) {
+function ShareBtn({
+  icon: Icon,
+  label,
+  href,
+  onClick,
+}: {
+  icon: LucideIcon;
+  label: string;
+  href?: string;
+  onClick?: () => void;
+}) {
   const inner = (
     <>
-      <Icon className="h-4 w-4" /><span className="text-sm">{label}</span>
+      <Icon className="h-4 w-4" />
+      <span className="text-sm">{label}</span>
     </>
   );
-  const cls = "inline-flex items-center justify-center gap-2 rounded-full border border-border px-3 py-2.5 hover:bg-accent";
-  return href
-    ? <a href={href} target="_blank" rel="noreferrer" className={cls}>{inner}</a>
-    : <button onClick={onClick} className={cls}>{inner}</button>;
+  const cls =
+    "inline-flex items-center justify-center gap-2 rounded-full border border-border px-3 py-2.5 hover:bg-accent";
+  return href ? (
+    <a href={href} target="_blank" rel="noreferrer" className={cls}>
+      {inner}
+    </a>
+  ) : (
+    <button onClick={onClick} className={cls}>
+      {inner}
+    </button>
+  );
 }
 
 function Tip({ children, done }: { children: React.ReactNode; done?: boolean }) {
   return (
     <li className="flex items-start gap-2">
-      <span className={`mt-0.5 grid h-4 w-4 place-items-center rounded-full text-[10px] ${done ? "bg-primary text-primary-foreground" : "border border-border"}`}>
+      <span
+        className={`mt-0.5 grid h-4 w-4 place-items-center rounded-full text-[10px] ${done ? "bg-primary text-primary-foreground" : "border border-border"}`}
+      >
         {done ? "✓" : ""}
       </span>
       <span className={done ? "text-foreground/70" : ""}>{children}</span>

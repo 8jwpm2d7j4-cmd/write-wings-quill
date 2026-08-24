@@ -10,14 +10,30 @@ const PRICE_FOR_CENTS: Record<number, string> = {
   299: "chapter_unlock_299",
 };
 
-export function PaidChapterGate({ chapterId, chapterTitle, priceCents, authorId }: { chapterId: string; chapterTitle: string; priceCents: number; authorId?: string }) {
+export function PaidChapterGate({
+  chapterId,
+  chapterTitle,
+  priceCents,
+  authorId,
+}: {
+  chapterId: string;
+  chapterTitle: string;
+  priceCents: number;
+  authorId?: string;
+}) {
   const { user } = useAuth();
   const { openCheckout, checkoutElement } = useStripeCheckout();
   const priceId = PRICE_FOR_CENTS[priceCents] ?? "chapter_unlock_99";
 
   const buy = () => {
-    if (!user) { toast.error("Sign in to unlock"); return; }
-    if (authorId && authorId === user.id) { toast.error("You're the author — you already have access."); return; }
+    if (!user) {
+      toast.error("Sign in to unlock");
+      return;
+    }
+    if (authorId && authorId === user.id) {
+      toast.error("You're the author — you already have access.");
+      return;
+    }
     openCheckout({
       priceId,
       customerEmail: user.email,
@@ -37,7 +53,9 @@ export function PaidChapterGate({ chapterId, chapterTitle, priceCents, authorId 
           <Lock className="h-5 w-5" />
         </div>
         <h3 className="mt-3 font-serif text-xl">{chapterTitle}</h3>
-        <p className="mt-1 text-sm text-muted-foreground">Premium chapter — unlock to keep reading.</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Premium chapter — unlock to keep reading.
+        </p>
         <Button onClick={buy} className="mt-4 rounded-full w-full">
           Unlock for ${(priceCents / 100).toFixed(2)}
         </Button>

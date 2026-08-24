@@ -15,12 +15,24 @@ export const Route = createFileRoute("/upgrade")({
   head: () => ({
     meta: [
       { title: "Upgrade to Quill Pro — Unlimited AI, contests & more" },
-      { name: "description", content: "Become a Quill Pro member for $6/mo. Unlimited AI assists, AI narration, beta-reader invites, and entry to monthly writing contests." },
+      {
+        name: "description",
+        content:
+          "Become a Quill Pro member for $6/mo. Unlimited AI assists, AI narration, beta-reader invites, and entry to monthly writing contests.",
+      },
       { property: "og:title", content: "Upgrade to Quill Pro" },
-      { property: "og:description", content: "Unlimited AI assists, AI narration, beta-reader invites, and contest entries — $6/mo." },
+      {
+        property: "og:description",
+        content:
+          "Unlimited AI assists, AI narration, beta-reader invites, and contest entries — $6/mo.",
+      },
     ],
   }),
-  component: () => <AppShell><Upgrade /></AppShell>,
+  component: () => (
+    <AppShell>
+      <Upgrade />
+    </AppShell>
+  ),
 });
 
 const FEATURES = [
@@ -55,8 +67,8 @@ function Upgrade() {
       const result = await openPortal({ data: { environment: getStripeEnvironment() } });
       if ("error" in result) throw new Error(result.error);
       window.open(result.url, "_blank");
-    } catch (e: any) {
-      toast.error(e?.message || "Could not open portal");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not open portal");
     } finally {
       setPortalLoading(false);
     }
@@ -73,10 +85,22 @@ function Upgrade() {
           <Crown className="h-6 w-6" />
         </div>
         <h1 className="mt-3 font-serif text-3xl">Quill Pro</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Everything you need to finish and share your book.</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Everything you need to finish and share your book.
+        </p>
         <div className="mt-4 inline-flex rounded-full border border-border p-1 text-xs">
-          <button onClick={() => setYearly(false)} className={`px-3 py-1 rounded-full ${!yearly ? "bg-primary text-primary-foreground" : ""}`}>Monthly</button>
-          <button onClick={() => setYearly(true)} className={`px-3 py-1 rounded-full ${yearly ? "bg-primary text-primary-foreground" : ""}`}>Yearly · save $12</button>
+          <button
+            onClick={() => setYearly(false)}
+            className={`px-3 py-1 rounded-full ${!yearly ? "bg-primary text-primary-foreground" : ""}`}
+          >
+            Monthly
+          </button>
+          <button
+            onClick={() => setYearly(true)}
+            className={`px-3 py-1 rounded-full ${yearly ? "bg-primary text-primary-foreground" : ""}`}
+          >
+            Yearly · save $12
+          </button>
         </div>
         <div className="mt-3 flex items-baseline justify-center gap-1">
           <span className="font-serif text-5xl">{yearly ? "$60" : "$6"}</span>
@@ -94,7 +118,9 @@ function Upgrade() {
 
         <div className="mt-6">
           {loading ? (
-            <Button disabled className="w-full rounded-full"><Loader2 className="h-4 w-4 animate-spin" /></Button>
+            <Button disabled className="w-full rounded-full">
+              <Loader2 className="h-4 w-4 animate-spin" />
+            </Button>
           ) : isPro ? (
             <div className="space-y-3">
               <div className="rounded-full bg-primary/10 px-4 py-2 text-sm font-medium text-primary">
@@ -105,8 +131,17 @@ function Upgrade() {
                   Cancels on {new Date(subscription.current_period_end).toLocaleDateString()}
                 </p>
               )}
-              <Button onClick={manage} disabled={portalLoading} variant="outline" className="w-full rounded-full">
-                {portalLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <ExternalLink className="mr-2 h-4 w-4" />}
+              <Button
+                onClick={manage}
+                disabled={portalLoading}
+                variant="outline"
+                className="w-full rounded-full"
+              >
+                {portalLoading ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <ExternalLink className="mr-2 h-4 w-4" />
+                )}
                 Manage subscription
               </Button>
             </div>

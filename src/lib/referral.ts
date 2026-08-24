@@ -7,16 +7,28 @@ export function captureRefFromUrl() {
   const p = new URLSearchParams(window.location.search);
   const code = p.get("ref");
   if (code && code.length >= 4 && code.length <= 24) {
-    try { localStorage.setItem(KEY, code.toLowerCase()); } catch {}
+    try {
+      localStorage.setItem(KEY, code.toLowerCase());
+    } catch {
+      // Storage may be unavailable in privacy-restricted browsers.
+    }
   }
 }
 
 export function getStoredRef(): string | null {
-  try { return localStorage.getItem(KEY); } catch { return null; }
+  try {
+    return localStorage.getItem(KEY);
+  } catch {
+    return null;
+  }
 }
 
 export function clearStoredRef() {
-  try { localStorage.removeItem(KEY); } catch {}
+  try {
+    localStorage.removeItem(KEY);
+  } catch {
+    // Removing a nonessential referral code should never block sign-in.
+  }
 }
 
 export async function redeemStoredRef(): Promise<{ ok: boolean; error?: string }> {
@@ -30,7 +42,9 @@ export async function redeemStoredRef(): Promise<{ ok: boolean; error?: string }
 }
 
 export async function redeemCode(code: string): Promise<{ ok: boolean; error?: string }> {
-  const { data, error } = await supabase.rpc("redeem_referral", { _code: code.trim().toLowerCase() });
+  const { data, error } = await supabase.rpc("redeem_referral", {
+    _code: code.trim().toLowerCase(),
+  });
   if (error) return { ok: false, error: error.message };
   const r = (data ?? {}) as { ok?: boolean; error?: string };
   return { ok: !!r.ok, error: r.error };

@@ -4,7 +4,13 @@ import { useEffect, type ReactNode } from "react";
 import { BottomNav } from "./BottomNav";
 import { PaymentTestModeBanner } from "./PaymentTestModeBanner";
 
-export function AppShell({ children, hideNav = false }: { children: ReactNode; hideNav?: boolean }) {
+export function AppShell({
+  children,
+  hideNav = false,
+}: {
+  children: ReactNode;
+  hideNav?: boolean;
+}) {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
 
@@ -23,7 +29,7 @@ export function AppShell({ children, hideNav = false }: { children: ReactNode; h
   return (
     <div className="mx-auto max-w-md min-h-screen pb-24 relative">
       <PaymentTestModeBanner />
-      {children}
+      <main id="main-content">{children}</main>
       {!hideNav && <BottomNav />}
     </div>
   );

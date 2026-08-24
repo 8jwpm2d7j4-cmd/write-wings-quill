@@ -5,7 +5,12 @@ import { userIsPro } from "@/lib/membership.server";
 
 const input = z.object({
   text: z.string().min(1).max(4500),
-  voiceId: z.string().min(1).max(64).regex(/^[a-zA-Z0-9]+$/).default("EXAVITQu4vr4xnSDxMaL"),
+  voiceId: z
+    .string()
+    .min(1)
+    .max(64)
+    .regex(/^[a-zA-Z0-9]+$/)
+    .default("EXAVITQu4vr4xnSDxMaL"),
 });
 
 export const narrate = createServerFn({ method: "POST" })
@@ -26,9 +31,14 @@ export const narrate = createServerFn({ method: "POST" })
         body: JSON.stringify({
           text: data.text,
           model_id: "eleven_turbo_v2_5",
-          voice_settings: { stability: 0.5, similarity_boost: 0.75, style: 0.3, use_speaker_boost: true },
+          voice_settings: {
+            stability: 0.5,
+            similarity_boost: 0.75,
+            style: 0.3,
+            use_speaker_boost: true,
+          },
         }),
-      }
+      },
     );
     if (!res.ok) throw new Error(`TTS failed: ${res.status} ${(await res.text()).slice(0, 200)}`);
     const buf = await res.arrayBuffer();

@@ -31,7 +31,7 @@ export function StreakCalendar({ entries, target = 500 }: { entries: Entry[]; ta
   };
 
   // Group into weeks (columns)
-  const cols: typeof cells[] = [];
+  const cols: (typeof cells)[] = [];
   for (let i = 0; i < weeks; i++) cols.push(cells.slice(i * 7, i * 7 + 7));
 
   return (

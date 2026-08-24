@@ -9,7 +9,7 @@ function paymentsEnvironment(): StripeEnv {
   if (clientToken?.startsWith("pk_live_")) return "live";
   throw new Error(
     "Stripe payments are not configured for this build. " +
-    "Complete Stripe go-live in your project to enable production checkout."
+      "Complete Stripe go-live in your project to enable production checkout.",
   );
 }
 

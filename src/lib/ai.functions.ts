@@ -25,7 +25,9 @@ export const aiAssist = createServerFn({ method: "POST" })
       const { data: used, error: usageErr } = await context.supabase.rpc("bump_ai_usage");
       if (usageErr) throw new Error("Could not record AI usage");
       if ((used ?? 0) > FREE_DAILY_ASSISTS) {
-        throw new Error(`Free plan limit reached (${FREE_DAILY_ASSISTS} AI assists/day). Upgrade to Quill Pro for unlimited.`);
+        throw new Error(
+          `Free plan limit reached (${FREE_DAILY_ASSISTS} AI assists/day). Upgrade to Quill Pro for unlimited.`,
+        );
       }
     }
     const key = process.env.LOVABLE_API_KEY;
@@ -60,7 +62,9 @@ export const generateCover = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => coverInput.parse(d))
   .handler(async ({ data, context }) => {
     if (!(await userIsPro(context.userId))) {
-      throw new Error("AI cover generation is a Quill Pro feature. Upgrade to design unlimited covers.");
+      throw new Error(
+        "AI cover generation is a Quill Pro feature. Upgrade to design unlimited covers.",
+      );
     }
     const key = process.env.LOVABLE_API_KEY;
     if (!key) throw new Error("Missing LOVABLE_API_KEY");
@@ -84,7 +88,7 @@ export const generateCover = createServerFn({ method: "POST" })
       const t = await res.text();
       throw new Error(`Cover generation failed (${res.status}): ${t.slice(0, 300)}`);
     }
-    const json = await res.json() as { data?: Array<{ b64_json?: string; url?: string }> };
+    const json = (await res.json()) as { data?: Array<{ b64_json?: string; url?: string }> };
     const item = json.data?.[0];
     if (!item) throw new Error("No image returned");
     return {

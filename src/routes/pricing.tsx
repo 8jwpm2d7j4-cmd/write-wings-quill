@@ -7,9 +7,16 @@ export const Route = createFileRoute("/pricing")({
   head: () => ({
     meta: [
       { title: "Pricing — Quill Pro from $6/month" },
-      { name: "description", content: "Quill Pro: unlimited AI assists, AI narration, beta-reader invites, and monthly contests. $6/month or $60/year." },
+      {
+        name: "description",
+        content:
+          "Quill Pro: unlimited AI assists, AI narration, beta-reader invites, and monthly contests. $6/month or $60/year.",
+      },
       { property: "og:title", content: "Pricing — Quill Pro" },
-      { property: "og:description", content: "Unlimited AI assists, AI narration, beta-reader invites — $6/mo or $60/yr." },
+      {
+        property: "og:description",
+        content: "Unlimited AI assists, AI narration, beta-reader invites — $6/mo or $60/yr.",
+      },
     ],
   }),
   component: PricingPage,
@@ -28,17 +35,20 @@ function PricingPage() {
   const proDest = user ? "/upgrade" : "/auth";
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-
       <header className="flex items-center justify-between">
         <Link to="/" className="inline-flex items-center gap-2 font-serif text-xl">
           <BookOpen className="h-5 w-5" /> Quill
         </Link>
-        <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground">Sign in</Link>
+        <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground">
+          Sign in
+        </Link>
       </header>
 
       <div className="mt-10 text-center">
         <h1 className="font-serif text-4xl tracking-tight">Simple, writer-friendly pricing</h1>
-        <p className="mt-3 text-muted-foreground">Start free. Upgrade when you're ready to publish.</p>
+        <p className="mt-3 text-muted-foreground">
+          Start free. Upgrade when you're ready to publish.
+        </p>
       </div>
 
       <div className="mt-10 grid gap-5 md:grid-cols-2">
@@ -49,13 +59,24 @@ function PricingPage() {
             <span className="text-muted-foreground">/forever</span>
           </div>
           <ul className="mt-5 space-y-2.5 text-sm">
-            <li className="flex items-start gap-2.5"><Check className="mt-0.5 h-4 w-4 text-primary shrink-0" /> Write and publish chapters</li>
-            <li className="flex items-start gap-2.5"><Check className="mt-0.5 h-4 w-4 text-primary shrink-0" /> Reader following and comments</li>
-            <li className="flex items-start gap-2.5"><Check className="mt-0.5 h-4 w-4 text-primary shrink-0" /> Limited AI assists</li>
-            <li className="flex items-start gap-2.5"><Check className="mt-0.5 h-4 w-4 text-primary shrink-0" /> EPUB export</li>
+            <li className="flex items-start gap-2.5">
+              <Check className="mt-0.5 h-4 w-4 text-primary shrink-0" /> Write and publish chapters
+            </li>
+            <li className="flex items-start gap-2.5">
+              <Check className="mt-0.5 h-4 w-4 text-primary shrink-0" /> Reader following and
+              comments
+            </li>
+            <li className="flex items-start gap-2.5">
+              <Check className="mt-0.5 h-4 w-4 text-primary shrink-0" /> Limited AI assists
+            </li>
+            <li className="flex items-start gap-2.5">
+              <Check className="mt-0.5 h-4 w-4 text-primary shrink-0" /> EPUB export
+            </li>
           </ul>
           <Link to="/auth" className="mt-6 block">
-            <Button variant="outline" className="w-full rounded-full">Create free account</Button>
+            <Button variant="outline" className="w-full rounded-full">
+              Create free account
+            </Button>
           </Link>
         </div>
 
@@ -78,7 +99,9 @@ function PricingPage() {
             ))}
           </ul>
           <Link to={proDest} className="mt-6 block">
-            <Button className="w-full rounded-full"><Crown className="mr-2 h-4 w-4" /> {user ? "Upgrade to Pro" : "Get Quill Pro"}</Button>
+            <Button className="w-full rounded-full">
+              <Crown className="mr-2 h-4 w-4" /> {user ? "Upgrade to Pro" : "Get Quill Pro"}
+            </Button>
           </Link>
           <p className="mt-3 text-[11px] text-muted-foreground text-center">
             Cancel anytime. 30-day money-back guarantee.

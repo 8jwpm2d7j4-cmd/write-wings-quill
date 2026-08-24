@@ -4,7 +4,10 @@ export const Route = createFileRoute("/refund-policy")({
   head: () => ({
     meta: [
       { title: "Refund Policy — Quill" },
-      { name: "description", content: "Quill's 30-day money-back guarantee for Pro subscriptions." },
+      {
+        name: "description",
+        content: "Quill's 30-day money-back guarantee for Pro subscriptions.",
+      },
     ],
   }),
   component: RefundPage,
@@ -13,7 +16,9 @@ export const Route = createFileRoute("/refund-policy")({
 function RefundPage() {
   return (
     <div className="mx-auto max-w-2xl px-6 py-16 prose prose-stone">
-      <Link to="/" className="text-sm text-muted-foreground">← Back</Link>
+      <Link to="/" className="text-sm text-muted-foreground">
+        ← Back
+      </Link>
       <h1 className="font-serif text-4xl mt-4">Refund Policy</h1>
       <p className="text-sm text-muted-foreground">Last updated: May 18, 2026</p>
 

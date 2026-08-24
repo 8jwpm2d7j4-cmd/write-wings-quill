@@ -22,6 +22,7 @@ export function BottomNav() {
             <li key={to}>
               <Link
                 to={to}
+                aria-current={active ? "page" : undefined}
                 className={cn(
                   "flex flex-col items-center justify-center gap-1 py-2.5 text-[10px] font-medium tracking-wide uppercase transition-colors",
                   active ? "text-primary" : "text-muted-foreground hover:text-foreground",
@@ -36,7 +37,10 @@ export function BottomNav() {
                   )}
                   style={highlight ? { boxShadow: "var(--shadow-cover)" } : undefined}
                 >
-                  <Icon className={highlight ? "h-5 w-5" : "h-5 w-5"} strokeWidth={active || highlight ? 2.4 : 1.8} />
+                  <Icon
+                    className={highlight ? "h-5 w-5" : "h-5 w-5"}
+                    strokeWidth={active || highlight ? 2.4 : 1.8}
+                  />
                 </span>
                 <span>{label}</span>
               </Link>

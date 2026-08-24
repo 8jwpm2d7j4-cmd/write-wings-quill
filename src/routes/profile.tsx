@@ -8,12 +8,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { LogOut, Trophy, BarChart3, Rss, Crown, ChevronRight, Sparkles, Library, Megaphone, Gift } from "lucide-react";
+import {
+  LogOut,
+  Trophy,
+  BarChart3,
+  Rss,
+  Crown,
+  ChevronRight,
+  Sparkles,
+  Library,
+  Megaphone,
+  Gift,
+  type LucideIcon,
+} from "lucide-react";
 import { toast } from "sonner";
 import { useSubscription } from "@/hooks/useSubscription";
 import { AchievementWall } from "@/components/AchievementWall";
 
-export const Route = createFileRoute("/profile")({ component: () => <AppShell><Profile /></AppShell> });
+export const Route = createFileRoute("/profile")({
+  component: () => (
+    <AppShell>
+      <Profile />
+    </AppShell>
+  ),
+});
 
 function Profile() {
   const { user } = useAuth();
@@ -29,7 +47,12 @@ function Profile() {
 
   const [penName, setPenName] = useState("");
   const [bio, setBio] = useState("");
-  useEffect(() => { if (profile) { setPenName(profile.pen_name); setBio(profile.bio ?? ""); } }, [profile?.id]); // eslint-disable-line
+  useEffect(() => {
+    if (profile) {
+      setPenName(profile.pen_name);
+      setBio(profile.bio ?? "");
+    }
+  }, [profile?.id]); // eslint-disable-line
 
   const save = async () => {
     await supabase.from("profiles").update({ pen_name: penName, bio }).eq("id", user!.id);
@@ -75,9 +98,16 @@ function Profile() {
         </div>
         <div className="space-y-1.5">
           <Label>Bio</Label>
-          <Textarea value={bio} onChange={(e) => setBio(e.target.value)} className="min-h-[80px]" placeholder="Tell readers about yourself" />
+          <Textarea
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+            className="min-h-[80px]"
+            placeholder="Tell readers about yourself"
+          />
         </div>
-        <Button onClick={save} className="w-full rounded-full">Save</Button>
+        <Button onClick={save} className="w-full rounded-full">
+          Save
+        </Button>
       </div>
 
       <h2 className="mt-8 font-serif text-xl">Explore</h2>
@@ -95,20 +125,26 @@ function Profile() {
           <h2 className="mt-8 font-serif text-xl flex items-center gap-2">
             <Sparkles className="h-5 w-5" /> Achievements
           </h2>
-          <div className="mt-3"><AchievementWall userId={user.id} /></div>
+          <div className="mt-3">
+            <AchievementWall userId={user.id} />
+          </div>
         </>
       )}
 
       <Button variant="outline" onClick={signOut} className="mt-8 w-full rounded-full">
-        <LogOut className="mr-2 h-4 w-4" />Sign out
+        <LogOut className="mr-2 h-4 w-4" />
+        Sign out
       </Button>
     </div>
   );
 }
 
-function NavCard({ to, icon: Icon, title }: { to: string; icon: any; title: string }) {
+function NavCard({ to, icon: Icon, title }: { to: string; icon: LucideIcon; title: string }) {
   return (
-    <Link to={to} className="paper-card p-4 hover:bg-accent/40 transition flex flex-col items-start">
+    <Link
+      to={to}
+      className="paper-card p-4 hover:bg-accent/40 transition flex flex-col items-start"
+    >
       <div className="grid h-8 w-8 place-items-center rounded-full bg-accent text-accent-foreground">
         <Icon className="h-4 w-4" />
       </div>

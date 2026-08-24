@@ -26,7 +26,11 @@ export async function awardIfNew(userId: string, code: AchievementCode) {
   return true;
 }
 
-export async function checkWritingMilestones(userId: string, totalWords: number, currentStreak: number) {
+export async function checkWritingMilestones(
+  userId: string,
+  totalWords: number,
+  currentStreak: number,
+) {
   if (totalWords >= 100) await awardIfNew(userId, "first_words");
   if (totalWords >= 1000) await awardIfNew(userId, "thousand_words");
   if (totalWords >= 10000) await awardIfNew(userId, "ten_thousand");

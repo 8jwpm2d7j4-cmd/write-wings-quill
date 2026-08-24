@@ -6,14 +6,28 @@ import { useAuth } from "@/lib/auth";
 import { useStripeCheckout } from "@/hooks/useStripeCheckout";
 import { toast } from "sonner";
 
-export function TipJar({ authorId, manuscriptId, authorName }: { authorId: string; manuscriptId: string; authorName: string }) {
+export function TipJar({
+  authorId,
+  manuscriptId,
+  authorName,
+}: {
+  authorId: string;
+  manuscriptId: string;
+  authorName: string;
+}) {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const { openCheckout, checkoutElement } = useStripeCheckout();
 
   const tip = (priceId: string, label: string) => {
-    if (!user) { toast.error("Sign in to tip"); return; }
-    if (user.id === authorId) { toast.error("You can't tip yourself"); return; }
+    if (!user) {
+      toast.error("Sign in to tip");
+      return;
+    }
+    if (user.id === authorId) {
+      toast.error("You can't tip yourself");
+      return;
+    }
     setOpen(false);
     openCheckout({
       priceId,

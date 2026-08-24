@@ -23,7 +23,12 @@ export function useStripeCheckout() {
   const closeCheckout = useCallback(() => setOptions(null), []);
 
   const checkoutElement = (
-    <Dialog open={isOpen} onOpenChange={(open) => { if (!open) closeCheckout(); }}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) closeCheckout();
+      }}
+    >
       <DialogContent className="max-w-xl p-0 overflow-hidden">
         <DialogHeader className="px-6 pt-6">
           <DialogTitle className="font-serif text-xl">

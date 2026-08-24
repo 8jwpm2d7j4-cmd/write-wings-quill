@@ -7,10 +7,7 @@ export const Route = createFileRoute("/checkout/return")({
     session_id: typeof search.session_id === "string" ? search.session_id : undefined,
   }),
   head: () => ({
-    meta: [
-      { title: "Payment complete — Quill" },
-      { name: "robots", content: "noindex" },
-    ],
+    meta: [{ title: "Payment complete — Quill" }, { name: "robots", content: "noindex" }],
   }),
   component: CheckoutReturn,
 });
@@ -30,7 +27,9 @@ function CheckoutReturn() {
       </p>
       <div className="mt-8 flex flex-col gap-3">
         <Link to="/">
-          <Button className="w-full rounded-full"><BookOpen className="mr-2 h-4 w-4" /> Back to Quill</Button>
+          <Button className="w-full rounded-full">
+            <BookOpen className="mr-2 h-4 w-4" /> Back to Quill
+          </Button>
         </Link>
       </div>
     </div>

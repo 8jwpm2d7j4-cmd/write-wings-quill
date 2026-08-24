@@ -13,7 +13,9 @@ export function SignupCounter({ className = "" }: { className?: string }) {
   });
   const n = data ?? 0;
   return (
-    <div className={`inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs ${className}`}>
+    <div
+      className={`inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1.5 text-xs ${className}`}
+    >
       <span className="relative flex h-2 w-2">
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary/60" />
         <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />

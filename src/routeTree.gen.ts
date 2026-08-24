@@ -36,6 +36,7 @@ import { Route as EmbedIdRouteImport } from './routes/embed.$id'
 import { Route as CoverIdRouteImport } from './routes/cover.$id'
 import { Route as CheckoutReturnRouteImport } from './routes/checkout/return'
 import { Route as BookSlugRouteImport } from './routes/book.$slug'
+import { Route as BetaTokenRouteImport } from './routes/beta.$token'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api/public/payments/webhook'
 
 const UpgradeRoute = UpgradeRouteImport.update({
@@ -173,6 +174,11 @@ const BookSlugRoute = BookSlugRouteImport.update({
   path: '/book/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BetaTokenRoute = BetaTokenRouteImport.update({
+  id: '/beta/$token',
+  path: '/beta/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaymentsWebhookRoute =
   ApiPublicPaymentsWebhookRouteImport.update({
     id: '/api/public/payments/webhook',
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/upgrade': typeof UpgradeRoute
+  '/beta/$token': typeof BetaTokenRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/cover/$id': typeof CoverIdRoute
@@ -230,6 +237,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/upgrade': typeof UpgradeRoute
+  '/beta/$token': typeof BetaTokenRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/cover/$id': typeof CoverIdRoute
@@ -261,6 +269,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/terms': typeof TermsRoute
   '/upgrade': typeof UpgradeRoute
+  '/beta/$token': typeof BetaTokenRoute
   '/book/$slug': typeof BookSlugRoute
   '/checkout/return': typeof CheckoutReturnRoute
   '/cover/$id': typeof CoverIdRoute
@@ -293,6 +302,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/upgrade'
+    | '/beta/$token'
     | '/book/$slug'
     | '/checkout/return'
     | '/cover/$id'
@@ -323,6 +333,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/upgrade'
+    | '/beta/$token'
     | '/book/$slug'
     | '/checkout/return'
     | '/cover/$id'
@@ -353,6 +364,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/terms'
     | '/upgrade'
+    | '/beta/$token'
     | '/book/$slug'
     | '/checkout/return'
     | '/cover/$id'
@@ -384,6 +396,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TermsRoute: typeof TermsRoute
   UpgradeRoute: typeof UpgradeRoute
+  BetaTokenRoute: typeof BetaTokenRoute
   BookSlugRoute: typeof BookSlugRoute
   CheckoutReturnRoute: typeof CheckoutReturnRoute
   CoverIdRoute: typeof CoverIdRoute
@@ -586,6 +599,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BookSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/beta/$token': {
+      id: '/beta/$token'
+      path: '/beta/$token'
+      fullPath: '/beta/$token'
+      preLoaderRoute: typeof BetaTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/payments/webhook': {
       id: '/api/public/payments/webhook'
       path: '/api/public/payments/webhook'
@@ -616,6 +636,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TermsRoute: TermsRoute,
   UpgradeRoute: UpgradeRoute,
+  BetaTokenRoute: BetaTokenRoute,
   BookSlugRoute: BookSlugRoute,
   CheckoutReturnRoute: CheckoutReturnRoute,
   CoverIdRoute: CoverIdRoute,
@@ -629,3 +650,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

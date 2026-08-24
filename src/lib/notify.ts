@@ -10,10 +10,11 @@ export async function notify(opts: {
   manuscriptId?: string | null;
 }) {
   if (opts.actorId && opts.actorId === opts.userId) return; // don't notify self
-  await supabase.rpc("send_notification", {
+  const { error } = await supabase.rpc("send_notification", {
     _user_id: opts.userId,
     _kind: opts.kind,
     _message: opts.message,
     _manuscript_id: opts.manuscriptId ?? undefined,
   });
+  if (error) throw error;
 }

@@ -7,7 +7,11 @@ import { AchievementWall } from "@/components/AchievementWall";
 import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/u/$penName")({
-  component: () => <AppShell><Author /></AppShell>,
+  component: () => (
+    <AppShell>
+      <Author />
+    </AppShell>
+  ),
   head: ({ params }) => ({
     meta: [
       { title: `${params.penName} — Quill` },
@@ -23,15 +27,27 @@ function Author() {
   const { data: profile } = useQuery({
     queryKey: ["author-profile", penName],
     queryFn: async () =>
-      (await supabase.from("profiles")
-        .select("id,pen_name,bio,avatar_url,genres,created_at,updated_at")
-        .eq("pen_name", penName).maybeSingle()).data,
+      (
+        await supabase
+          .from("profiles")
+          .select("id,pen_name,bio,avatar_url,genres,created_at,updated_at")
+          .eq("pen_name", penName)
+          .maybeSingle()
+      ).data,
   });
 
   const { data: books = [] } = useQuery({
     queryKey: ["author-books", profile?.id],
     enabled: !!profile,
-    queryFn: async () => (await supabase.from("manuscripts").select("*").eq("author_id", profile!.id).eq("status", "published").order("updated_at", { ascending: false })).data ?? [],
+    queryFn: async () =>
+      (
+        await supabase
+          .from("manuscripts")
+          .select("*")
+          .eq("author_id", profile!.id)
+          .eq("status", "published")
+          .order("updated_at", { ascending: false })
+      ).data ?? [],
   });
 
   const { data: stats } = useQuery({
@@ -39,8 +55,14 @@ function Author() {
     enabled: !!profile,
     queryFn: async () => {
       const [{ count: followers }, { count: following }] = await Promise.all([
-        supabase.from("follows").select("*", { count: "exact", head: true }).eq("following_id", profile!.id),
-        supabase.from("follows").select("*", { count: "exact", head: true }).eq("follower_id", profile!.id),
+        supabase
+          .from("follows")
+          .select("*", { count: "exact", head: true })
+          .eq("following_id", profile!.id),
+        supabase
+          .from("follows")
+          .select("*", { count: "exact", head: true })
+          .eq("follower_id", profile!.id),
       ]);
       return { followers: followers ?? 0, following: following ?? 0 };
     },
@@ -58,9 +80,18 @@ function Author() {
 
       <div className="mt-4 flex items-start gap-3">
         {profile.avatar_url ? (
-          <img src={profile.avatar_url} alt={`${profile.pen_name}'s avatar`} className="h-16 w-16 rounded-full object-cover" />
+          <img
+            src={profile.avatar_url}
+            alt={`${profile.pen_name}'s avatar`}
+            className="h-16 w-16 rounded-full object-cover"
+          />
         ) : (
-          <div aria-hidden="true" className="h-16 w-16 rounded-full bg-accent grid place-items-center font-serif text-xl">{profile.pen_name[0]}</div>
+          <div
+            aria-hidden="true"
+            className="h-16 w-16 rounded-full bg-accent grid place-items-center font-serif text-xl"
+          >
+            {profile.pen_name[0]}
+          </div>
         )}
         <div className="flex-1 min-w-0">
           <h1 className="font-serif text-2xl truncate">{profile.pen_name}</h1>
@@ -74,21 +105,32 @@ function Author() {
 
       <h2 className="mt-8 font-serif text-xl">Books</h2>
       <div className="mt-3 grid grid-cols-2 gap-3">
-        {books.map((b: any) => (
+        {books.map((b) => (
           <Link key={b.id} to="/read/$id" params={{ id: b.id }} className="block">
             <div className="book-cover aspect-[2/3] overflow-hidden bg-gradient-to-br from-secondary to-muted">
-              {b.cover_url ? <img src={b.cover_url} alt={b.title} className="h-full w-full object-cover" />
-                : <div className="grid h-full place-items-center font-serif text-xs px-2 text-center">{b.title}</div>}
+              {b.cover_url ? (
+                <img src={b.cover_url} alt={b.title} className="h-full w-full object-cover" />
+              ) : (
+                <div className="grid h-full place-items-center font-serif text-xs px-2 text-center">
+                  {b.title}
+                </div>
+              )}
             </div>
             <div className="mt-2 text-sm font-serif leading-tight line-clamp-2">{b.title}</div>
-            <div className="text-[11px] text-muted-foreground">{b.word_count?.toLocaleString()} words</div>
+            <div className="text-[11px] text-muted-foreground">
+              {b.word_count?.toLocaleString()} words
+            </div>
           </Link>
         ))}
-        {books.length === 0 && <div className="col-span-2 text-sm text-muted-foreground">No published books yet.</div>}
+        {books.length === 0 && (
+          <div className="col-span-2 text-sm text-muted-foreground">No published books yet.</div>
+        )}
       </div>
 
       <h2 className="mt-8 font-serif text-xl">Achievements</h2>
-      <div className="mt-3"><AchievementWall userId={profile.id} /></div>
+      <div className="mt-3">
+        <AchievementWall userId={profile.id} />
+      </div>
 
       <script
         type="application/ld+json"
